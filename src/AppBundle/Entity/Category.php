@@ -10,10 +10,12 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  * @ORM\Table(name="category")
+ *
  */
 class Category
 {
@@ -23,16 +25,27 @@ class Category
      * @ORM\Column(type="integer")
      */
     private $id;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
     /**
      * @ORM\Column(type="string")
      */
     private $title;
     /**
-     * @ORM\Column(type="text")
+     *
+     * @ORM\Column(type="text",nullable=true)
+     *
+     *
      */
     private $description;
     /**
-     * @ORM\Column(type="string")
+     * @ORM\Column(type="string",nullable=true)
      */
     private $imageUrl;
     /**
@@ -40,14 +53,17 @@ class Category
      */
     private $isActive;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      */
     private $createdAt;
     /**
-     * @ORM\Column(type="datetime")
+     * @ORM\Column(type="datetime",nullable=true)
      */
     private $updatedAt;
-
+    /**
+     * @ORM\ManyToOne(targetEntity="Category")
+     */
+    private $parentCategory;
     /**
      * @return mixed
      */
@@ -144,5 +160,8 @@ class Category
         $this->updatedAt = $updatedAt;
     }
 
+    public function __toString(){
+       return $this->getTitle();
+    }
 
 }

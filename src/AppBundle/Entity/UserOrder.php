@@ -11,11 +11,13 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity
- * @ORM\Table(name="order")
+ * @ORM\Table(name="user_order")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\OrderRepository")
  */
-class Order
+class UserOrder
 {
     /**
      * @ORM\Id
@@ -23,6 +25,10 @@ class Order
      * @ORM\Column(type="integer")
      */
     private $id;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isAuctionOrder;
     /**
      * @ORM\Column(type="string")
      */
@@ -55,6 +61,21 @@ class Order
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $orderStatus;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vendor;
 
     /**
      * @return mixed
@@ -182,6 +203,70 @@ class Order
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsAuctionOrder()
+    {
+        return $this->isAuctionOrder;
+    }
+
+    /**
+     * @param mixed $isAuctionOrder
+     */
+    public function setIsAuctionOrder($isAuctionOrder)
+    {
+        $this->isAuctionOrder = $isAuctionOrder;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrderStatus()
+    {
+        return $this->orderStatus;
+    }
+
+    /**
+     * @param mixed $orderStatus
+     */
+    public function setOrderStatus($orderStatus)
+    {
+        $this->orderStatus = $orderStatus;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param mixed $user
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVendor()
+    {
+        return $this->vendor;
+    }
+
+    /**
+     * @param mixed $vendor
+     */
+    public function setVendor($vendor)
+    {
+        $this->vendor = $vendor;
     }
 
 

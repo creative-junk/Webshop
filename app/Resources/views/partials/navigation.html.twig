@@ -1,0 +1,38 @@
+<!--  non mobile menu -->
+<div class="top-menu visible-md visible-lg">
+    <ul>
+        <li class=""><a href="{{ path('homepage') }}">Home</a></li>
+        <li class=""><a href="{{ path('products') }}">Shop</a> </li>
+        {% if is_granted('ROLE_USER') %}
+            <li class=""><a href="{{ path('auction_list') }}">Auction</a> </li>
+            <li class=""><a href="{{ path('my_order_list') }}">My Orders</a></li>
+            <li class=""><a href="{{ path('my_profile') }}">My Profile</a></li>
+        {% endif %}
+        <li class=""><a href="{{ path('about') }}">About</a></li>
+        <li class=""><a href="{{ path('contact') }}">Contact</a></li>
+    </ul>
+</div>
+
+<!--  mobile only menu -->
+<select class="top-drop-menu  visible-sm visible-xs">
+    <option value="{{ path('homepage') }}">
+        Home
+    </option>
+    <option value="{{ path('products') }}">
+        Shop
+    </option>
+    {% if is_granted('ROLE_USER') %}
+        <option value="{{ path('my_order_list') }}">
+            My Orders
+        </option>
+        <option value="{{ path('my_profile') }}">
+            My Profile
+        </option>
+    {% endif %}
+    <option value="{{ path('about') }}">
+        About
+    </option>
+    <option value="{{ path('contact') }}">
+        Contact
+    </option>
+</select>

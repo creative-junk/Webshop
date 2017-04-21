@@ -1,0 +1,23 @@
+<div class="product-item text-center">
+
+        <a href="/shop/{{ product.id }}/view">
+            <img class="product-img" src="{{ asset('images/products/') }}{{ product.imageurl }}" alt="{{ product.title }}" />
+        </a>
+
+    <hr>
+    <div class="title uppercase bold">
+        <a href="/shop/{{ product.id }}/view">{{ product.title }}</a>
+    </div>
+    <div class="price">
+
+        <span>{{ product.currency }} {{ product.price }}</span>
+    </div>
+    <div class="buttons-holder">
+        <div class="add-cart-holder">
+            {{ form_start(form) }}
+            <input type="hidden" name="productId" value="{{ product.id }}"/>
+            <a class="md-button" href="#" data-ajax-handler="shop:onAddToCart" data-ajax-update="#mini-cart=shop-minicart, #product-page=shop-product">Add to Cart</a>
+
+        </div>
+    </div>
+</div>

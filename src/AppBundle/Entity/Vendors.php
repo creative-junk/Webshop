@@ -27,6 +27,11 @@ class Vendors
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+    /**
+     * @ORM\ManyToOne(targetEntity="VendorTypes")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $vendorType;
 
     /**
      * @return mixed

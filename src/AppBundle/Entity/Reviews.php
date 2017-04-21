@@ -27,6 +27,10 @@ class Reviews
      * @ORM\Column(type="string")
      */
     private $reviewText;
+    /**
+     * @ORM\ManyToOne(targetEntity="Product")
+     */
+    private $product;
 
     /**
      * @return mixed

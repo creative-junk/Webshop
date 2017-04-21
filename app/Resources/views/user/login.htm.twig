@@ -1,0 +1,34 @@
+{% extends 'base.html.twig' %}
+{% block title %} Login / Register {% endblock %}
+{% block body %}
+<section class="section-signin-page">
+    <div class="container">
+        <div class="sign-in-holder">
+
+            <div class="row">
+                <div class="col-xs-12 col-sm-6">
+                    <h3>Login</h3>
+                    {% if error %}
+                        <div class="alert alert-danger">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}</div>
+                    {% endif %}
+                    {{ form_start(loginform) }}
+                    {{ form_row(loginform._username) }}
+                    {{ form_row(loginform._password) }}
+                    <a class=" forget-link" href="">forgot your password?</a>
+                    <button type="submit" class="md-button narrow ">Login <span class="fa fa-lock"></span> </button>
+
+                    {{ form_end(loginform) }}
+
+                </div>
+                <div class="col-xs-12 col-sm-6">
+                    <h3>Register!</h3>
+
+                    {{ render(controller('AppBundle:User:register')) }}
+
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

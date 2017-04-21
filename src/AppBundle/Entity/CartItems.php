@@ -12,7 +12,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CartItemsRepository")
  * @ORM\Table(name="cart_items")
  */
 class CartItems
@@ -35,6 +35,11 @@ class CartItems
      * @ORM\Column(type="string")
      */
     private $lineTotal;
+    /**
+     * @ORM\ManyToOne(targetEntity="Cart")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $cart;
 
     /**
      * @return mixed

@@ -12,7 +12,7 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\CartRepository")
  * @ORM\Table(name="cart")
  */
 class Cart
@@ -32,9 +32,17 @@ class Cart
      */
     private $cartAmount;
     /**
+     * @ORM\Column(type="integer")
+     */
+    private $nrItems;
+    /**
      * @ORM\Column(type="datetime")
      */
     private $createdAt;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     */
+    private $ownedBy;
 
     /**
      * @return mixed
@@ -83,4 +91,37 @@ class Cart
     {
         $this->createdAt = $createdAt;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getOwnedBy()
+    {
+        return $this->ownedBy;
+    }
+
+    /**
+     * @param mixed $ownedBy
+     */
+    public function setOwnedBy(User $ownedBy)
+    {
+        $this->ownedBy = $ownedBy;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getNrItems()
+    {
+        return $this->nrItems;
+    }
+
+    /**
+     * @param mixed $nrItems
+     */
+    public function setNrItems($nrItems)
+    {
+        $this->nrItems = $nrItems;
+    }
+
 }

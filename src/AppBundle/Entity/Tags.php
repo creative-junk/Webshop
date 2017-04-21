@@ -4,34 +4,34 @@
  * (C) 2016 Crysoft Dynamics Ltd
  * Karbon V 1.0
  * Maxx
- * 4/12/2017
- *******************************************************************************
+ * 4/14/2017
+ ********************************************************************************/
 
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
+
 /**
  * @ORM\Entity
- * @ORM\Table(name="genus")
- *
-class Genus
+ * @ORM\Table(name="tags")
+ */
+class Tags
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
      * @ORM\Column(type="integer")
-     *
+     */
     private $id;
-
     /**
      * @ORM\Column(type="string")
-     *
+     */
     private $name;
 
     /**
      * @return mixed
-     *
+     */
     public function getName()
     {
         return $this->name;
@@ -39,11 +39,10 @@ class Genus
 
     /**
      * @param mixed $name
-     *
+     */
     public function setName($name)
     {
         $this->name = $name;
     }
 
-
-}*/
+}

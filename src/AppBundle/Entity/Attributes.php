@@ -8,7 +8,9 @@
  ********************************************************************************/
 
 namespace AppBundle\Entity;
+
 use Doctrine\ORM\Mapping as ORM;
+
 
 /**
  * @ORM\Entity
@@ -26,6 +28,11 @@ class Attributes
      * @ORM\Column(type="string")
      */
     private $name;
+    /**
+     * @ORM\ManyToOne(targetEntity="AttributeSets")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $attributeSet;
 
     /**
      * @return mixed

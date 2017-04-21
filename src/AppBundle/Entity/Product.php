@@ -10,9 +10,10 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
  * @ORM\Table(name="product")
  */
 class Product
@@ -24,33 +25,62 @@ class Product
      */
     private $id;
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isSeedling;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isOnSale;
+    /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="string")
      */
     private $title;
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @ORM\Column(type="string",nullable=true)
      */
     private $slug;
     /**
-     * @ORM\Column(type="string")
+     * @Assert\NotBlank()
+     * @ORM\Column(type="text")
      */
     private $description;
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="text")
      */
     private $summary;
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="string")
+     */
+    private $imageUrl;
+    /**
+     * @ORM\Column(type="string")
+     */
+    private $currency;
+    /**
+     * @Assert\NotBlank()
+     * @Assert\Range(min=0,minMessage="Price has to be Greater than 0")
+     * @ORM\Column(type="string")
      */
     private $price;
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="boolean")
      */
     private $isActive;
     /**
+     * @Assert\NotBlank()
      * @ORM\Column(type="boolean")
      */
     private $isAuthorized;
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $isFeatured;
+
     /**
      * @ORM\Column(type="datetime")
      */
@@ -58,14 +88,48 @@ class Product
     /**
      * @ORM\Column(type="datetime")
      */
-    private $updateAt;
+    private $updatedAt;
+    /**
+     * @Assert\NotBlank()
+     * @ORM\ManyToOne(targetEntity="Category")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $category;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $user;
 
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
     /**
      * @return mixed
      */
     public function getTitle()
     {
         return $this->title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param mixed $category
+     */
+    public function setCategory(Category $category)
+    {
+        $this->category = $category;
     }
 
     /**
@@ -191,17 +255,115 @@ class Product
     /**
      * @return mixed
      */
-    public function getUpdateAt()
+    public function getUpdatedAt()
     {
-        return $this->updateAt;
+        return $this->updatedAt;
     }
 
     /**
-     * @param mixed $updateAt
+     * @param mixed $updatedAt
      */
-    public function setUpdateAt($updateAt)
+    public function setUpdatedAt($updatedAt)
     {
-        $this->updateAt = $updateAt;
+        $this->updatedAt = $updatedAt;
     }
+
+    /**
+     * @return User $user
+     *
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * @param User $user
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsSeedling()
+    {
+        return $this->isSeedling;
+    }
+
+    /**
+     * @param mixed $isSeedling
+     */
+    public function setIsSeedling($isSeedling)
+    {
+        $this->isSeedling = $isSeedling;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsFeatured()
+    {
+        return $this->isFeatured;
+    }
+
+    /**
+     * @param mixed $isFeatured
+     */
+    public function setIsFeatured($isFeatured)
+    {
+        $this->isFeatured = $isFeatured;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageUrl()
+    {
+        return $this->imageUrl;
+    }
+
+    /**
+     * @param mixed $imageUrl
+     */
+    public function setImageUrl($imageUrl)
+    {
+        $this->imageUrl = $imageUrl;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getIsOnSale()
+    {
+        return $this->isOnSale;
+    }
+
+    /**
+     * @param mixed $isOnSale
+     */
+    public function setIsOnSale($isOnSale)
+    {
+        $this->isOnSale = $isOnSale;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param mixed $currency
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
+    }
+
 
 }

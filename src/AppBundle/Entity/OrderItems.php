@@ -35,6 +35,15 @@ class OrderItems
      * @ORM\Column(type="string")
      */
     private $lineTotal;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserOrder")
+     */
+    private $order;
+    /**
+     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $product;
 
     /**
      * @return mixed

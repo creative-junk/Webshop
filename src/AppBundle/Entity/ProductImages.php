@@ -10,6 +10,7 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use AppBundle\Entity;
 
 /**
  * @ORM\Entity
@@ -27,6 +28,11 @@ class ProductImages
      * @ORM\Column(type="string")
      */
     private $imageUrl;
+    /**
+     * @ORM\ManyToOne(targetEntity="Product")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $product;
 
     /**
      * @return mixed
