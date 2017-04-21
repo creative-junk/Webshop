@@ -216,7 +216,7 @@ class Auction
     /**
      * @param mixed $product
      */
-    public function setProduct($product)
+    public function setProduct(Product $product)
     {
         $this->product = $product;
     }

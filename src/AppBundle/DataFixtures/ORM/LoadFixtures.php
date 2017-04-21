@@ -82,11 +82,11 @@ class LoadFixtures implements FixtureInterface
     }
     public function userRole(){
         $image = [
-            "['ROLE_ADMIN']",
-            "['ROLE_GROWER']",
-            "['ROLE_BREEDER']",
-            "['ROLE_AGENT']",
-            "['ROLE_USER']",
+            ['ROLE_ADMIN'],
+            ['ROLE_GROWER'],
+            ['ROLE_BREEDER'],
+            ['ROLE_AGENT'],
+            ['ROLE_USER'],
         ];
         $key = array_rand($image);
 

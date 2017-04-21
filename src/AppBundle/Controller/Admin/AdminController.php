@@ -112,10 +112,10 @@ class AdminController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
-            ->findAllMyReceivedOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        $orders = $em->getRepository('AppBundle:UserOrder')
+            ->findAllUserOrdersOrderByDate();
+        return $this->render('admin/order/list.html.twig',[
+            'orders'=>$orders,
         ]);
 
     }

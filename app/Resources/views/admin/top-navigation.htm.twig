@@ -9,7 +9,7 @@
             <ul class="nav navbar-nav navbar-right">
                 <li class="">
                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                        <img src="{{ asset('images/products/image03.jpg') }}" alt="">{{ app.user.username }}
+                        <img src="{{ asset('images/products/image03.jpg') }}" alt="">{{ app.user.firstName }}&nbsp;{{ app.user.lastName }}
                         <span class=" fa fa-angle-down"></span>
                     </a>
                     <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -19,16 +19,12 @@
                                 <span>Settings</span>
                             </a>
                         </li>
-                        <li><a href="{{ path('security_login') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
+                        <li><a href="{{ path('security_logout') }}"><i class="fa fa-sign-out pull-right"></i> Log Out</a></li>
                     </ul>
                 </li>
 
-                <li role="presentation" class="dropdown">
-                    <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                        <i class="fa fa-envelope-o"></i>
-                        <span class="badge bg-green"></span>
-                    </a>
-
+                <li>
+                    <a style="color: white;line-height:12px;margin-top: 10px" class="btn btn-xs btn-success" href="{{ path('homepage') }}"> <i class="fa fa-cart-plus"></i> back to Shop</a>
                 </li>
             </ul>
         </nav>

@@ -29,6 +29,15 @@ class GrowerController extends Controller
 {
 
     /**
+     * @Route("/",name="grower_dashboard")
+     */
+    public function dashboardAction(){
+
+        return $this->render(':grower:dashboard.htm.twig');
+        //dump($products);die;
+        //return new Response('Product Saved');
+    }
+    /**
      * @Route("/product/",name="grower_product_list")
      */
     public function listAction(){
@@ -37,7 +46,7 @@ class GrowerController extends Controller
         $products = $em->getRepository('AppBundle:Product')
             ->findAllActiveProductsOrderByDate();
 
-        return $this->render('grower/product/list.html.twig',[
+        return $this->render('grower/product/mylist.html.twig',[
             'products'=>$products,
         ]);
 
@@ -117,10 +126,10 @@ class GrowerController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyReceivedOrdersOrderByDate($user);
         return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+            'orders'=>$orders,
         ]);
 
     }
@@ -131,10 +140,10 @@ class GrowerController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        return $this->render('grower/order/mylist.html.twig',[
+            'orders'=>$orders,
         ]);
 
     }
@@ -170,7 +179,7 @@ class GrowerController extends Controller
     public function auctionListAction(){
 
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('Auction.php')
+        $products = $em->getRepository('AppBundle:Auction')
             ->findAllActiveAuctionProductsOrderByDate();
 
         return $this->render('grower/product/list.html.twig',[
@@ -184,11 +193,11 @@ class GrowerController extends Controller
     public function myAuctionProductListAction(){
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('Auction.php')
+        $products = $em->getRepository('AppBundle:Auction')
             ->findAllMyActiveAuctionProductsOrderByDate($user);
 
         return $this->render('grower/auction/product/mylist.html.twig',[
-            'products'=>$products,
+            'auctionProducts'=>$products,
         ]);
 
     }

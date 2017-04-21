@@ -11,8 +11,8 @@ namespace AppBundle\Controller\Admin;
 
 
 use AppBundle\Entity\Product;
+use AppBundle\Form\AdminProductFormType;
 use AppBundle\Form\CategoryFormType;
-use AppBundle\Form\ProductFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -43,12 +43,26 @@ class ProductAdminController extends Controller
         //return new Response('Product Saved');
     }
     /**
+     * @Route("/auction/",name="admin_auction_list")
+     *
+     */
+    public function listAuctionAction()
+    {
+        $em=$this->getDoctrine()->getManager();
+        $products = $em->getRepository('AppBundle:Auction')
+            ->findAllActiveAuctionProductsOrderByDate();
+
+        return $this->render('admin/auction/list.html.twig',[
+            'auctionProducts'=>$products,
+        ]);
+    }
+    /**
      * @Route("/product/new",name="admin_product_new")
      */
     public function newAction(Request $request)
     {
 
-        $form = $this->createForm(ProductFormType::class);
+        $form = $this->createForm(AdminProductFormType::class);
 
         //only handles data on POST
         $form->handleRequest($request);
@@ -74,7 +88,7 @@ class ProductAdminController extends Controller
      */
     public function editAction(Request $request,Product $product)
     {
-        $form = $this->createForm(ProductFormType::class,$product);
+        $form = $this->createForm(AdminProductFormType::class,$product);
 
         //only handles data on POST
         $form->handleRequest($request);

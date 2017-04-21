@@ -29,6 +29,15 @@ class BreederController extends Controller
 {
 
     /**
+     * @Route("/",name="breeder_dashboard")
+     */
+    public function dashboardAction(){
+
+        return $this->render(':breeder:dashboard.htm.twig');
+        //dump($products);die;
+        //return new Response('Product Saved');
+    }
+    /**
      * @Route("/product/",name="breeder_product_list")
      */
     public function listAction(){

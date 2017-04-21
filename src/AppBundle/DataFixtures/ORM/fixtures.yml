@@ -1,0 +1,52 @@
+AppBundle\Entity\User:
+    user{1..30}:
+        firstName: "<firstName($gender = null|'male'|'female')>"
+        lastName: '<lastName()>'
+        email: '<email()>'
+        plainPassword: iliketurtles
+        roles: '<userRole()>'
+        isActive: '<boolean(95)>'
+
+AppBundle\Entity\Category:
+    category{1..10}:
+        title: '<category()>'
+        description: '<sentence()>'
+        imageUrl: null
+        isActive: '<boolean(75)>'
+        createdAt: null
+        updatedAt: null
+
+AppBundle\Entity\Product:
+    product{1..20}:
+        title: '<product()>'
+        slug:   null
+        description: '<sentence()>'
+        summary:    '<sentence()>'
+        currency: '$'
+        price:      '<randomFloat($nbMaxDecimals = 2, $min = 10, $max = 100)>'
+        isActive: '<boolean(75)>'
+        isAuthorized: '<boolean(75)>'
+        isFeatured: '<boolean(50)>'
+        imageUrl: '<imageurl()>'
+        isOnSale: '<boolean(10)>'
+        isActive: '<boolean(75)>'
+        isSeedling: '<boolean(25)>'
+        category:   '@category*'
+        user:       '@user*'
+        createdAt: "<dateTimeThisYear($max = 'now', $timezone = date_default_timezone_get())>"
+        updatedAt: "<dateTimeThisYear($max = 'now', $timezone = date_default_timezone_get())>"
+
+AppBundle\Entity\Auction:
+    auction{1..20}:
+        slug: null
+        quantity: '<numberBetween($min = 1000, $max = 9000)>'
+        currency: '$'
+        bundlePrice:   '<randomFloat($nbMaxDecimals = 2, $min = 1000, $max = 10000)>'
+        finalPrice:   '<randomFloat($nbMaxDecimals = 2, $min = 1000, $max = 10000)>'
+        isActive: '<boolean(75)>'
+        isAuthorized: '<boolean(75)>'
+        product: '@product*'
+        user:       '@user*'
+        agent:       '@user*'
+        createdAt: "<dateTimeThisYear($max = 'now', $timezone = date_default_timezone_get())>"
+        updatedAt: "<dateTimeThisYear($max = 'now', $timezone = date_default_timezone_get())>"

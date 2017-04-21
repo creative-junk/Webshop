@@ -66,6 +66,15 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
     /**
      * Returns the username used to authenticate the user.
      *

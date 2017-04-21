@@ -365,5 +365,7 @@ class Product
         $this->currency = $currency;
     }
 
-
+    public function __toString(){
+        return $this->getTitle();
+    }
 }

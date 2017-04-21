@@ -28,6 +28,20 @@
         <option value="{{ path('my_profile') }}">
             My Profile
         </option>
+
+    {% endif %}
+    {% if is_granted('ROLE_GROWER') %}
+    <option value="{{ path('grower_dashboard') }}">
+        Manage Products / Orders
+    </option>
+    {% elseif is_granted('ROLE_BREEDER') %}
+    <option value="{{ path('breeder_dashboard') }}">
+        Manage Seedlings / Orders
+        </option>
+    {%elseif is_granted('ROLE_ADMIN')  %}
+    <option value="{{ path('admin_dashboard') }}">
+        Administration
+        </option>
     {% endif %}
     <option value="{{ path('about') }}">
         About

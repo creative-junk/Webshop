@@ -18,7 +18,7 @@ use Doctrine\ORM\EntityRepository;
 class AuctionRepository extends EntityRepository
 {
     /**
-     * @return Product[]
+     * @return Auction[]
      */
     public function findAllActiveAuctionProductsOrderByDate(){
         return $this->createQueryBuilder('product')

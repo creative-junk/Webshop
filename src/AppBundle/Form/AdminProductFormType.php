@@ -3,14 +3,10 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateType;
-use Symfony\Component\Form\Extension\Core\Type\MoneyType;
-use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ProductFormType extends AbstractType
+class AdminProductFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -29,8 +25,27 @@ class ProductFormType extends AbstractType
             ->add('price',NumberType::class)
             ->add('category',null,[
                 'placeholder'=>'Choose a Category'
-            ]);
-
+            ])
+            ->add('isAuthorized',ChoiceType::class,[
+                'choices'=>[
+                    'Yes'=>true,
+                    'No'=>false,
+                ]
+            ])
+            ->add('isActive',ChoiceType::class,[
+                'choices'=>[
+                    'Yes'=>true,
+                    'No'=>false,
+                ]
+            ])
+            ->add('createdAt',DateType::class,[
+                'widget'=>'single_text',
+                'attr' => [
+                    'class' => 'js-datepicker'
+                ],
+                'html5'=>false,
+            ])
+            ->add('updatedAt');
     }
 
     public function configureOptions(OptionsResolver $resolver)
@@ -42,6 +57,6 @@ class ProductFormType extends AbstractType
 
     public function getName()
     {
-        return 'app_bundle_product_form_type';
+        return 'app_bundle_admin_product_form_type';
     }
 }

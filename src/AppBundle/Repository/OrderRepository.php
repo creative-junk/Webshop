@@ -22,7 +22,7 @@ class OrderRepository extends EntityRepository
     public function findAllUserOrdersOrderByDate(){
 
         return $this->createQueryBuilder('user_order')
-            ->orderBy('product.createdAt','DESC')
+            ->orderBy('user_order.createdAt','DESC')
             ->getQuery()
             ->execute();
     }
