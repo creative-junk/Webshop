@@ -40,10 +40,23 @@ class Cart
      */
     private $createdAt;
     /**
+     * @ORM\Column(type="datetime")
+     */
+    private $updatedAt;
+    /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
     private $ownedBy;
 
+    public function __construct()
+    {
+        // we set up "created"+"modified"
+        $this->setCreatedAt(new \DateTime());
+        if ($this->getUpdatedAt() == null) {
+            $this->setUpdatedAt(new \DateTime());
+        }
+
+    }
     /**
      * @return mixed
      */
@@ -122,6 +135,22 @@ class Cart
     public function setNrItems($nrItems)
     {
         $this->nrItems = $nrItems;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUpdatedAt()
+    {
+        return $this->updatedAt;
+    }
+
+    /**
+     * @param mixed $updatedAt
+     */
+    public function setUpdatedAt($updatedAt)
+    {
+        $this->updatedAt = $updatedAt;
     }
 
 }

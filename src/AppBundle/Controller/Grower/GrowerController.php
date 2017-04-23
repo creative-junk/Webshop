@@ -71,8 +71,14 @@ class GrowerController extends Controller
      */
     public function newAction(Request $request)
     {
-
-        $form = $this->createForm(ProductFormType::class);
+        $product = new Product();
+        $product->setUser($this->get('security.token_storage')->getToken()->getUser());
+        $product->setIsActive(true);
+        $product->setIsAuthorized(true);
+        $product->setIsFeatured(false);
+        $product->setIsOnSale(false);
+        $product->setIsSeedling(false);
+        $form = $this->createForm(ProductFormType::class, $product);
 
         //only handles data on POST
         $form->handleRequest($request);

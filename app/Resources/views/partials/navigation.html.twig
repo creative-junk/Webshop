@@ -8,8 +8,22 @@
             <li class=""><a href="{{ path('my_order_list') }}">My Orders</a></li>
             <li class=""><a href="{{ path('my_profile') }}">My Profile</a></li>
         {% endif %}
+        {% if is_granted('ROLE_GROWER') %}
+            <li class=""><a href="{{ path('grower_dashboard') }}">
+                    Manage Products / Orders
+                </a></li>
+        {% elseif is_granted('ROLE_BREEDER') %}
+            <li class=""><a href="{{ path('breeder_dashboard') }}">
+                    Manage Seedlings / Orders
+                </a></li>
+        {% elseif is_granted('ROLE_ADMIN') %}
+            <li class=""><a href="{{ path('admin_dashboard') }}">
+                    Administration
+                </a></li>
+        {% else %}
         <li class=""><a href="{{ path('about') }}">About</a></li>
         <li class=""><a href="{{ path('contact') }}">Contact</a></li>
+        {% endif %}
     </ul>
 </div>
 

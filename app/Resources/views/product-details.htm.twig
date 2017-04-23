@@ -38,7 +38,7 @@
                         {% endif %}
 
 
-
+                        {{ form_start(form) }}
                         <div class="drop-down-holder">
 
                             <div class="quantitiy inline">
@@ -48,19 +48,18 @@
                         </div>
                         <div class="buttons-holder">
                             <div class="add-cart-holder inline">
-
-
+                                <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
+                                <input type="hidden" name="productPrice" value="{{ product.price }}"/>
                                 <input type="hidden" name="productId" value="{{ product.id }}"/>
-                                <a class="md-button" href="#" data-ajax-handler="shop:onAddToCart" data-ajax-update="#mini-cart=shop-minicart, #product-page=shop-product">Add to Cart</a>
-
+                                <button class="md-button">Add to Cart</button>
+                                <!-- <a class="md-button" href="#" data-ajax-handler="shop:onAddToCart" data-ajax-update="#mini-cart=shop-minicart, #product-page=shop-product">Add to Cart</a>
+                                -->
+                                {{ form_end(form) }}
                             </div>
                         </div>
             </div>
         </div>
     </div>
     </section>
-
-
-
 
      {% endblock %}

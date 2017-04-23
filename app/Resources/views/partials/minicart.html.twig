@@ -1,6 +1,18 @@
-<a href="{{ path('products') }}">shopping cart</a>:
-<span class="top-cart-price">{{ cart.cartAmount }}</span>
+<a href="{{ path('cart_list') }}">shopping cart</a>:
+<span class="top-cart-price">
+    {% if(cart) %}
+        {{ cart.cartCurrency }} {{ cart.cartAmount }}
+    {% else %}
+        $ 0.00
+    {% endif %}
+</span>
 <div class="total-buble">
-    <span>{{ cart.nrItems }}</span>
+    <span>
+     {% if(cart) %}
+         {{ cart.nrItems }}
+     {% else %}
+         0
+     {% endif %}
+    </span>
 </div>
 

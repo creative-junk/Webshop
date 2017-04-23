@@ -66,6 +66,10 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $isActive;
+    /**
+     * @ORM\Column(type="string",nullable=true,options={"default"="$"})
+     */
+    private $currency;
 
     /**
      * @return mixed
@@ -242,6 +246,22 @@ class User implements UserInterface
     public function setLastName($lastName)
     {
         $this->lastName = $lastName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCurrency()
+    {
+        return $this->currency;
+    }
+
+    /**
+     * @param mixed $currency
+     */
+    public function setCurrency($currency)
+    {
+        $this->currency = $currency;
     }
 
 }

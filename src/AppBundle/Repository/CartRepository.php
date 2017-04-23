@@ -25,7 +25,7 @@ class CartRepository extends EntityRepository
             ->andWhere('cart.ownedBy= :createdBy')
             ->setParameter('createdBy',$user)
             ->getQuery()
-            ->getFirstResult();
+            ->execute();
     }
     public function findAllItemsInMyCartOrderByDate(Cart $cart){
         return $this->createQueryBuilder('cartitems')

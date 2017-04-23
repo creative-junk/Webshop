@@ -15,6 +15,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AuctionRepository")
  * @ORM\Table(name="auction")
+ *
  */
 class Auction
 {
@@ -82,6 +83,15 @@ class Auction
      */
     private $agent;
 
+    public function __construct()
+    {
+        // we set up "created"+"modified"
+        $this->setCreatedAt(new \DateTime());
+        if ($this->getUpdatedAt() == null) {
+            $this->setUpdatedAt(new \DateTime());
+        }
+
+    }
 
     /**
      * @return mixed

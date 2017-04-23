@@ -3,6 +3,7 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -13,10 +14,8 @@ class CategoryFormType extends AbstractType
         $builder
             ->add('title')
             ->add('description')
-            ->add('imageUrl')
-            ->add('isActive')
-            ->add('createdAt')
-            ->add('updatedAt');
+            ->add('imageName', FileType::class)
+            ->add('isActive');
     }
 
     public function configureOptions(OptionsResolver $resolver)

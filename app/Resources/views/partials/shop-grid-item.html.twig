@@ -14,10 +14,15 @@
     </div>
     <div class="buttons-holder">
         <div class="add-cart-holder">
-
+            {{ form_start(form) }}
+            <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
+            <input type="hidden" name="productPrice" value="{{ product.price }}"/>
             <input type="hidden" name="productId" value="{{ product.id }}"/>
-            <a class="md-button" href="#" data-ajax-handler="shop:onAddToCart" data-ajax-update="#mini-cart=shop-minicart, #product-page=shop-product">Add to Cart</a>
+            <input type="hidden" name="quantity" value="1"/>
 
+            <button class="md-button">Add to Cart</button>
+
+            {{ form_end(form) }}
         </div>
     </div>
 </div>

@@ -11,10 +11,14 @@ namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use AppBundle\Entity;
+use Symfony\Component\HttpFoundation\File\File;
+
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\CategoryRepository")
  * @ORM\Table(name="category")
+ * @Vich\Uploadable
  *
  */
 class Category
@@ -48,6 +52,19 @@ class Category
      * @ORM\Column(type="string",nullable=true)
      */
     private $imageUrl;
+    /**
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName", size="imageSize")
+     * @var File
+     */
+    private $imageFile;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $imageName;
+    /**
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    private $imageSize;
     /**
      * @ORM\Column(type="boolean")
      */
@@ -162,6 +179,54 @@ class Category
 
     public function __toString(){
        return $this->getTitle();
+    }
+
+    /**
+     * @return File
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File $imageFile
+     */
+    public function setImageFile($imageFile)
+    {
+        $this->imageFile = $imageFile;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @param mixed $imageName
+     */
+    public function setImageName($imageName)
+    {
+        $this->imageName = $imageName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageSize()
+    {
+        return $this->imageSize;
+    }
+
+    /**
+     * @param mixed $imageSize
+     */
+    public function setImageSize($imageSize)
+    {
+        $this->imageSize = $imageSize;
     }
 
 }

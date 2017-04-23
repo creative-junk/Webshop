@@ -40,6 +40,11 @@ class CartItems
      * @ORM\JoinColumn(nullable=false)
      */
     private $cart;
+    /**
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $product;
 
     /**
      * @return mixed
@@ -87,6 +92,46 @@ class CartItems
     public function setLineTotal($lineTotal)
     {
         $this->lineTotal = $lineTotal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCart()
+    {
+        return $this->cart;
+    }
+
+    /**
+     * @param mixed $cart
+     */
+    public function setCart($cart)
+    {
+        $this->cart = $cart;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param mixed $product
+     */
+    public function setProduct(Product $product)
+    {
+        $this->product = $product;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
     }
 
 }

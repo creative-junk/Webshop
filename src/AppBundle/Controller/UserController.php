@@ -81,14 +81,24 @@ class UserController extends Controller
     /**
      * @Route("/home/orders/",name="my_order_list")
      */
+    public function ordersListAction()
+    {
+
+        return $this->render(':home:order.htm.twig');
+
+    }
+
+    /**
+     * @Route("/home/orders/my",name="order_list")
+     */
     public function myOrdersListAction(){
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyOrdersOrderByDate($user);
         return $this->render('home/order/list.html.twig',[
-            'products'=>$products,
+            'orders' => $orders,
         ]);
 
     }

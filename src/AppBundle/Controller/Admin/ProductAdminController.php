@@ -61,15 +61,16 @@ class ProductAdminController extends Controller
      */
     public function newAction(Request $request)
     {
+        $product = new Product();
+        $product->setUser($this->get('security.token_storage')->getToken()->getUser());
 
-        $form = $this->createForm(AdminProductFormType::class);
+        $form = $this->createForm(AdminProductFormType::class, $product);
 
         //only handles data on POST
         $form->handleRequest($request);
 
         if($form->isSubmitted() && $form->isValid()){
             $product = $form->getData();
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($product);
             $em->flush();
@@ -133,7 +134,6 @@ class ProductAdminController extends Controller
 
         //only handles data on POST
         $form->handleRequest($request);
-
         if($form->isSubmitted() && $form->isValid()){
             $category = $form ->getData();
 

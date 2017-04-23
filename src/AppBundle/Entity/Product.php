@@ -10,11 +10,15 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
  * @ORM\Table(name="product")
+ * @ORM\HasLifecycleCallbacks
+ * @Vich\Uploadable
  */
 class Product
 {
@@ -25,11 +29,12 @@ class Product
      */
     private $id;
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",nullable=true,options={"default"=false})
      */
     private $isSeedling;
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",nullable=true,options={"default"=false})
+     *
      */
     private $isOnSale;
     /**
@@ -53,9 +58,23 @@ class Product
      */
     private $summary;
     /**
-     * @ORM\Column(type="string")
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName", size="imageSize")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string",nullable=true)
      */
     private $imageUrl;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $imageName;
+    /**
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    private $imageSize;
     /**
      * @ORM\Column(type="string")
      */
@@ -68,16 +87,16 @@ class Product
     private $price;
     /**
      * @Assert\NotBlank()
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",options={"default"=true})
      */
     private $isActive;
     /**
      * @Assert\NotBlank()
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",options={"default"=true})
      */
     private $isAuthorized;
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean",options={"default"=false})
      */
     private $isFeatured;
 
@@ -100,6 +119,25 @@ class Product
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+
+    public function __construct()
+    {
+        // we set up "created"+"modified"
+        $this->setCreatedAt(new \DateTime());
+        if ($this->getUpdatedAt() == null) {
+            $this->setUpdatedAt(new \DateTime());
+        }
+
+    }
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
+    public function updateModifiedDatetime()
+    {
+        // update the modified time
+        $this->setUpdatedAt(new \DateTime());
+    }
 
     /**
      * @return mixed
@@ -368,4 +406,62 @@ class Product
     public function __toString(){
         return $this->getTitle();
     }
+
+    /**
+     * @return mixed
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @param mixed $imageName
+     */
+    public function setImageName($imageName)
+    {
+        $this->imageName = $imageName;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
+     * @return Product
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        if ($image) {
+            //Lets make sure at least one field changes so Doctrine can process the file
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageSize()
+    {
+        return $this->imageSize;
+    }
+
+    /**
+     * @param integer $imageSize
+     * @return Product
+     */
+    public function setImageSize($imageSize)
+    {
+        $this->imageSize = $imageSize;
+
+        return $this;
+    }
+
 }

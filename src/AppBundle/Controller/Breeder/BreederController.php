@@ -71,8 +71,15 @@ class BreederController extends Controller
      */
     public function newAction(Request $request)
     {
+        $product = new Product();
+        $product->setUser($this->get('security.token_storage')->getToken()->getUser());
+        $product->setIsActive(true);
+        $product->setIsAuthorized(true);
+        $product->setIsFeatured(false);
+        $product->setIsOnSale(false);
+        $product->setIsSeedling(true);
 
-        $form = $this->createForm(ProductFormType::class);
+        $form = $this->createForm(ProductFormType::class, $product);
 
         //only handles data on POST
         $form->handleRequest($request);
@@ -126,10 +133,10 @@ class BreederController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyReceivedOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        return $this->render('breeder/order/list.html.twig', [
+            'orders' => $orders,
         ]);
 
     }
@@ -140,10 +147,10 @@ class BreederController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        return $this->render('breeder/order/mylist.html.twig', [
+            'orders' => $orders,
         ]);
 
     }
