@@ -27,14 +27,6 @@ class CartRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
-    public function findAllItemsInMyCartOrderByDate(Cart $cart){
-        return $this->createQueryBuilder('cartitems')
-            ->andWhere('cartitems.cart= :ownedBy')
-            ->setParameter('createdBy',$cart)
-            ->orderBy('product.createdAt','DESC')
-            ->getQuery()
-            ->execute();
-    }
 
 
 }

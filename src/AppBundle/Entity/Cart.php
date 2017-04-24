@@ -9,6 +9,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -35,6 +36,7 @@ class Cart
      * @ORM\Column(type="integer")
      */
     private $nrItems;
+
     /**
      * @ORM\Column(type="datetime")
      */
@@ -55,6 +57,7 @@ class Cart
         if ($this->getUpdatedAt() == null) {
             $this->setUpdatedAt(new \DateTime());
         }
+        $this->cartItems = new ArrayCollection();
 
     }
     /**
@@ -151,6 +154,14 @@ class Cart
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCartItems()
+    {
+        return $this->cartItems;
     }
 
 }

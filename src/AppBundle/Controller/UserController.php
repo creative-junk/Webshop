@@ -51,7 +51,7 @@ class UserController extends Controller
      * @Route("/",name="homepage")
      */
     public function homeAction(){
-        return $this->render('home.htm.twig');
+        return $this->render('landing.htm.twig');
     }
     /**
      * @Route("/about",name="about")

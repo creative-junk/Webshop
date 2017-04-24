@@ -27,7 +27,7 @@ class ProductController extends Controller
 
         $cart = new Cart();
 
-        $cart->setOwnedBy($user);
+        //$cart->setOwnedBy($user);
 
         $form = $this->createForm(addToCartFormType::class, $cart);
 
@@ -78,6 +78,7 @@ class ProductController extends Controller
 
         ]);
     }
+
     /**
      * @Route("/product/grid",name="grid_products")
      *
@@ -126,6 +127,74 @@ class ProductController extends Controller
             'form' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/Seedlings/",name="seedlings")
+     *
+     */
+    public function indexSeedlingsAction(Request $request)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $products = $em->getRepository('AppBundle:Product')
+            ->findAllActiveSeedlingsOrderByDate();
+
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $cart = new Cart();
+
+        $cart->setOwnedBy($user);
+
+        $form = $this->createForm(addToCartFormType::class, $cart);
+
+        //only handles data on POST
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cart = $form->getData();
+
+            $existingCart = $em->getRepository('AppBundle:Cart')
+                ->findMyCart($user);
+            $quantity = $request->request->get('quantity');
+            $price = $request->request->get('productPrice');
+            $currency = $request->request->get('productCurrency');
+
+            //Create The cart Item
+            $cartItem = new CartItems();
+            $cartItem->setQuantity($quantity);
+            $cartItem->setUnitPrice($price);
+            $lineTotal = ($price) * ($quantity);
+            $cartItem->setLineTotal($lineTotal);
+
+            //Update the Cart
+            if ($existingCart[0]) {
+                $existingCart[0]->setCartAmount(($existingCart->getCartAmount()) + ($lineTotal));
+                $existingCart[0]->setNrItems(($existingCart->getNrItems()) + $quantity);
+                $cartItem->setCart($existingCart[0]);
+                $em->persist($existingCart[0]);
+            } else {
+                $cart->setCartAmount($lineTotal);
+                $cart->setNrItems($quantity);
+                $cart->setCartCurrency($currency);
+                $cartItem->setCart($cart);
+                $em->persist($cart);
+            }
+            $em->persist($cartItem);
+            $em->flush();
+
+            $this->addFlash('success', 'Product Created, Yaay!');
+
+            return $this->redirectToRoute('products');
+        }
+
+
+        return $this->render('shop.htm.twig', [
+            'products' => $products,
+            'form' => $form->createView()
+
+        ]);
+    }
+
+
     /**
      * @Route("product/featured",name="featured_products")
      */
@@ -133,8 +202,8 @@ class ProductController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $cart = new Cart();
+        // $cart->setOwnedBy($user);
 
-        $cart->setOwnedBy($user);
 
         $form = $this->createForm(addToCartFormType::class, $cart);
 

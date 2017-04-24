@@ -17,12 +17,10 @@ use Doctrine\ORM\EntityRepository;
 class CartItemsRepository extends EntityRepository
 {
 
-
     public function findAllItemsInMyCartOrderByDate(Cart $cart){
         return $this->createQueryBuilder('cartitems')
             ->andWhere('cartitems.cart= :ownedBy')
             ->setParameter('ownedBy', $cart)
-            ->orderBy('cartitems.id', 'DESC')
             ->getQuery()
             ->execute();
     }

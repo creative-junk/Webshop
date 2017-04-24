@@ -31,6 +31,21 @@ class ProductRepository extends EntityRepository
     /**
      * @return Product[]
      */
+    public function findAllActiveSeedlingsOrderByDate()
+    {
+        return $this->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('product.isSeedling = :isSeedling')
+            ->setParameter('isSeedling', true)
+            ->orderBy('product.createdAt', 'DESC')
+            ->getQuery()
+            ->execute();
+    }
+
+    /**
+     * @return Product[]
+     */
     public function findAllMyActiveProductsOrderByDate(User $user){
         return $this->createQueryBuilder('product')
             ->andWhere('product.isActive = :isActive')

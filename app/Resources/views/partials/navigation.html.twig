@@ -3,6 +3,11 @@
     <ul>
         <li class=""><a href="{{ path('homepage') }}">Home</a></li>
         <li class=""><a href="{{ path('products') }}">Shop</a> </li>
+        {% if is_granted('ROLE_GROWER') %}
+            <li class=""><a href="{{ path('seedlings') }}">
+                    Seedlings
+                </a></li>
+        {% endif %}
         {% if is_granted('ROLE_USER') %}
             <li class=""><a href="{{ path('auction_list') }}">Auction</a> </li>
             <li class=""><a href="{{ path('my_order_list') }}">My Orders</a></li>
