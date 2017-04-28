@@ -17,7 +17,6 @@ class ProductFormType extends AbstractType
     {
         $builder
             ->add('title')
-            ->add('slug')
             ->add('summary')
             ->add('description')
             ->add('imageFile', FileType::class)

@@ -5,6 +5,7 @@ AppBundle\Entity\User:
         email: '<email()>'
         plainPassword: iliketurtles
         roles: '<userRole()>'
+        userType: '<userType()>'
         isActive: '<boolean(95)>'
 
 AppBundle\Entity\Category:
@@ -19,7 +20,6 @@ AppBundle\Entity\Category:
 AppBundle\Entity\Product:
     product{1..20}:
         title: '<product()>'
-        slug:   null
         description: '<sentence()>'
         summary:    '<sentence()>'
         currency: '$'
@@ -27,7 +27,7 @@ AppBundle\Entity\Product:
         isActive: '<boolean(75)>'
         isAuthorized: '<boolean(75)>'
         isFeatured: '<boolean(50)>'
-        imageUrl: '<imageurl()>'
+        imageName: '<imageurl()>'
         isOnSale: '<boolean(10)>'
         isActive: '<boolean(75)>'
         isSeedling: '<boolean(25)>'

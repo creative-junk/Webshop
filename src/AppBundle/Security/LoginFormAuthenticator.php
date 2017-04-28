@@ -29,24 +29,33 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     private $em;
     private $router;
     private $passwordEncoder;
+    private $redirectFailureUrl;
+    private $redirectSuccessUrl;
 
     /**
      * LoginFormAuthenticator constructor.
      */
-    public function __construct(FormFactoryInterface $formFactory,EntityManager $em,RouterInterface $router,UserPasswordEncoder $passwordEncoder)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, String $redirectFailureUrl = null, String $redirectSuccessUrl = null)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;
         $this->router = $router;
         $this->passwordEncoder = $passwordEncoder;
+        $this->redirectFailureUrl = $redirectFailureUrl;
+        $this->redirectSuccessUrl = $redirectSuccessUrl;
     }
 
     public function getCredentials(Request $request)
     {
-        $isLoginSubmit = $request->getPathInfo()== '/login' && $request->isMethod('POST');
+        $isLoginSubmit = ($request->getPathInfo() == '/login/buyer' || $request->getPathInfo() == '/login/grower') && $request->isMethod('POST');
+        // $isGrowerLoginSubmit = $request->getPathInfo()=='/login/grower' && $request->isMethod('POST');
+
         if(!$isLoginSubmit){
             return;
         }
+
+        $this->redirectFailureUrl = $request->request->get('_failure_path');
+        $this->redirectSuccessUrl = $request->request->get('_target_path');
 
         $form = $this->formFactory->create(LoginForm::class);
         $form->handleRequest($request);
@@ -81,10 +90,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
 
     protected function getLoginUrl()
     {
-        return $this->router->generate('security_login');
+        return $this->router->generate($this->redirectFailureUrl);
     }
     protected function getDefaultSuccessRedirectUrl(){
-        return $this->router->generate('homepage');
+
+        return $this->router->generate($this->redirectSuccessUrl);
     }
 
 }

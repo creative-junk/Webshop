@@ -57,6 +57,10 @@ class User implements UserInterface
     private $plainPassword;
 
     /**
+     * @ORM\Column(type="string")
+     */
+    private $userType;
+    /**
      * @ORM\Column(type="json_array")
      */
     private $roles =[];
@@ -70,6 +74,11 @@ class User implements UserInterface
      * @ORM\Column(type="string",nullable=true,options={"default"="$"})
      */
     private $currency;
+
+    /**
+     * @ORM\Column(type="datetime",nullable=true)
+     */
+    private $lastLoginTime;
 
     /**
      * @return mixed
@@ -262,6 +271,38 @@ class User implements UserInterface
     public function setCurrency($currency)
     {
         $this->currency = $currency;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * @param mixed $userType
+     */
+    public function setUserType($userType)
+    {
+        $this->userType = $userType;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLastLoginTime()
+    {
+        return $this->lastLoginTime;
+    }
+
+    /**
+     * @param mixed $lastLoginTime
+     */
+    public function setLastLoginTime($lastLoginTime)
+    {
+        $this->lastLoginTime = $lastLoginTime;
     }
 
 }

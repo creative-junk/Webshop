@@ -13,6 +13,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\ProductRepository")
@@ -43,8 +44,8 @@ class Product
      */
     private $title;
     /**
-     * @Assert\NotBlank()
-     * @ORM\Column(type="string",nullable=true)
+     * @Gedmo\Slug(fields={"title"},updatable=false)
+     * @ORM\Column(length=255, unique=true)
      */
     private $slug;
     /**
@@ -63,10 +64,6 @@ class Product
      */
     private $imageFile;
 
-    /**
-     * @ORM\Column(type="string",nullable=true)
-     */
-    private $imageUrl;
     /**
      * @ORM\Column(type="string",nullable=true)
      */

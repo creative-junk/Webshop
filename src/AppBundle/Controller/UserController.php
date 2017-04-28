@@ -15,6 +15,99 @@ class UserController extends Controller
      */
     public function registerAction(Request $request)
     {
+        $user = new User();
+        $user->setUserType('buyer');
+        $user->setRoles(["ROLE_BUYER"]);
+        $user->setIsActive(true);
+        $user->setCurrency('KSH');
+
+        $form = $this->createForm(UserRegistrationForm::class, $user);
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            // $this->addFlash('success','Welcome '.$user->getEmail().' to Iflora');
+
+            /*return $this->get('security.authentication.guard_handler')
+                ->authenticateUserAndHandleSuccess(
+                    $user,
+                    $request,
+                    $this->get('app.security.login_form_authenticator'),
+                    'main'
+                );*/
+            return $this->redirectToRoute('user-registered');
+        }
+        return $this->render('user/register.htm.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/user/registered",name="user-registered")
+     */
+    public function userRegisteredAction()
+    {
+        return $this->render('user/user-registered.htm.twig');
+    }
+
+    /**
+     * @Route("/register/grower",name="grower_register")
+     */
+    public function registerGrowerAction(Request $request)
+    {
+        $user = new User();
+        $user->setUserType('grower');
+        $user->setRoles(["ROLE_GROWER"]);
+        $user->setIsActive(true);
+        $user->setCurrency('KSH');
+
+        $form = $this->createForm(UserRegistrationForm::class, $user);
+
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            /*  $this->addFlash('success','Welcome '.$user->getEmail().' to Iflora');
+
+              return $this->get('security.authentication.guard_handler')
+                  ->authenticateUserAndHandleSuccess(
+                      $user,
+                      $request,
+                      $this->get('app.security.login_form_authenticator'),
+                      'main'
+                  );*/
+            return $this->redirectToRoute('grower-registered');
+        }
+        return $this->render('user/grower-register.htm.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
+    /**
+     * @Route("/grower/registered",name="grower-registered")
+     */
+    public function growerRegisteredAction()
+    {
+        return $this->render('user/grower-registered.htm.twig');
+    }
+
+    /**
+     * @Route("/register/breeder",name="breeder_register")
+     */
+    public function registerBreederAction(Request $request)
+    {
         $form = $this->createForm(UserRegistrationForm::class);
 
 
@@ -37,10 +130,42 @@ class UserController extends Controller
                     'main'
                 );
         }
-        return $this->render('user/register.htm.twig',[
+        return $this->render('user/breeder-register.htm.twig', [
             'form' =>$form->createView()
         ]);
     }
+    /**
+     * @Route("/register/agent",name="agent_register")
+     */
+    public function registerAgentAction(Request $request)
+    {
+        $form = $this->createForm(UserRegistrationForm::class);
+
+
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            /** @var User $user */
+            $user = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($user);
+            $em->flush();
+
+            $this->addFlash('success', 'Welcome ' . $user->getEmail() . ' to Iflora');
+
+            return $this->get('security.authentication.guard_handler')
+                ->authenticateUserAndHandleSuccess(
+                    $user,
+                    $request,
+                    $this->get('app.security.login_form_authenticator'),
+                    'main'
+                );
+        }
+        return $this->render('user/agent-register.htm.twig', [
+            'form' => $form->createView()
+        ]);
+    }
+
     /**
      * @Route("/forgot-password",name="password_restore")
      */
@@ -51,7 +176,7 @@ class UserController extends Controller
      * @Route("/",name="homepage")
      */
     public function homeAction(){
-        return $this->render('landing.htm.twig');
+        return $this->render('home.htm.twig');
     }
     /**
      * @Route("/about",name="about")
@@ -66,40 +191,5 @@ class UserController extends Controller
         return $this->render('contact.htm.twig');
     }
 
-    /**
-     * @Route("/home",name="home")
-     */
-    public function userHomeAction(){
-        return $this->render('home/home.htm.twig');
-    }
-    /**
-     * @Route("/home/profile",name="my_profile")
-     */
-    public function profileAction(){
-        return $this->render('home.htm.twig');
-    }
-    /**
-     * @Route("/home/orders/",name="my_order_list")
-     */
-    public function ordersListAction()
-    {
 
-        return $this->render(':home:order.htm.twig');
-
-    }
-
-    /**
-     * @Route("/home/orders/my",name="order_list")
-     */
-    public function myOrdersListAction(){
-
-        $user = $this->get('security.token_storage')->getToken()->getUser();
-        $em=$this->getDoctrine()->getManager();
-        $orders = $em->getRepository('AppBundle:UserOrder')
-            ->findAllMyOrdersOrderByDate($user);
-        return $this->render('home/order/list.html.twig',[
-            'orders' => $orders,
-        ]);
-
-    }
 }

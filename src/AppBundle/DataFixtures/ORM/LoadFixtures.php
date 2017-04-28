@@ -86,7 +86,22 @@ class LoadFixtures implements FixtureInterface
             ['ROLE_GROWER'],
             ['ROLE_BREEDER'],
             ['ROLE_AGENT'],
-            ['ROLE_USER'],
+            ['ROLE_BUYER'],
+        ];
+        $key = array_rand($image);
+
+        return $image[$key];
+
+    }
+
+    public function userType()
+    {
+        $image = [
+            'admin',
+            'grower',
+            'breeder',
+            'agent',
+            'buyer',
         ];
         $key = array_rand($image);
 
