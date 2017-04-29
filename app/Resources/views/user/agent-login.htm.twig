@@ -37,7 +37,8 @@
                                     {{ form_row(loginform._password) }}
 
                                 </div>
-
+                                <input type="hidden" name="_target_path" value="agent_dashboard"/>
+                                <input type="hidden" name="_failure_path" value="agent_login"/>
                                 <div class="actions-toolbar">
                                     <div class="primary">
                                         <button type="submit" class="action login primary" name="send" id="send2"><span>Sign In</span>

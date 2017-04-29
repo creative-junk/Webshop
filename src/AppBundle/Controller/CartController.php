@@ -26,6 +26,7 @@ class CartController extends Controller
         if($cart) {
             $cartItems = $em->getRepository('AppBundle:CartItems')
                 ->findAllItemsInMyCartOrderByDate($cart[0]);
+            $cart = $cart[0];
         }else{
             $cartItems="";
             $cart = "";

@@ -11,8 +11,11 @@ namespace AppBundle\Controller\Agent;
 
 
 use AppBundle\Entity\Auction;
+use AppBundle\Entity\Cart;
 use AppBundle\Entity\Product;
 use AppBundle\Entity\UserOrder;
+use AppBundle\Form\addToCartFormType;
+use AppBundle\Form\AgentProductForm;
 use AppBundle\Form\AuctionProductForm;
 use AppBundle\Form\ProductFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -38,19 +41,65 @@ class AgentController extends Controller
         //dump($products);die;
         //return new Response('Product Saved');
     }
+
     /**
-     * @Route("/product/",name="agent_product_list")
+     * @Route("/product/my",name="my_assigned_product_list")
      */
-    public function listAction(){
 
-        $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:Product')
-            ->findAllActiveProductsOrderByDate();
+    public function myAssignedProductListAction(Request $request = null)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        return $this->render('agent/product/list.html.twig',[
-            'products'=>$products,
+        $em = $this->getDoctrine()->getManager();
+
+        $queryBuilder = $em->getRepository('AppBundle:Auction')
+            ->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->orderBy('product.createdAt', 'DESC');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/product/mylist.html.twig', [
+            'products' => $result,
         ]);
 
+    }
+
+    /**
+     * @Route("/product/{id}/edit",name="assigned_product_edit")
+     */
+    public function editAssignedProductAction(Request $request, Auction $product)
+    {
+        $form = $this->createForm(AgentProductForm::class, $product);
+
+        //only handles data on POST
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $product = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($product);
+            $em->flush();
+
+            $this->addFlash('success', 'Product in Auction Updated Successfully!');
+
+            return $this->redirectToRoute('my_assigned_product_list');
+        }
+
+        return $this->render('agent/product/edit.html.twig', [
+            'productForm' => $form->createView()
+        ]);
     }
 
     /**
@@ -60,10 +109,10 @@ class AgentController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyReceivedOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        return $this->render('agent/order/list.html.twig', [
+            'orders' => $orders,
         ]);
 
     }
@@ -74,10 +123,10 @@ class AgentController extends Controller
 
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:UserOrder')
+        $orders = $em->getRepository('AppBundle:UserOrder')
             ->findAllMyOrdersOrderByDate($user);
-        return $this->render('grower/order/list.html.twig',[
-            'products'=>$products,
+        return $this->render('agent/order/mylist.html.twig', [
+            'orders' => $orders,
         ]);
 
     }
@@ -108,89 +157,106 @@ class AgentController extends Controller
         ]);
     }
     /**
-     * @Route("/auction/",name="auction_product_list")
+     * @Route("/auction/",name="agent_auction_product_list")
      */
-    public function auctionListAction(){
+    public function auctionListAction(Request $request)
+    {
 
-        $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('Auction.php')
-            ->findAllActiveAuctionProductsOrderByDate();
+        $em = $this->getDoctrine()->getManager();
 
-        return $this->render('grower/product/list.html.twig',[
-            'products'=>$products,
+        $queryBuilder = $em->getRepository('AppBundle:Auction')
+            ->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->orderBy('product.createdAt', 'DESC');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/auction/list.htm.twig', [
+            'products' => $result,
         ]);
+
 
     }
     /**
-     * @Route("/auction/my/products",name="my_grower_auction_list")
+     * @Route("/auction/{id}/view",name="agent_auction_product_details")
      */
-    public function myAuctionProductListAction(){
+    public function auctionProductDetailsAction(Request $request, Auction $product)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
-        $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('Auction.php')
-            ->findAllMyActiveAuctionProductsOrderByDate($user);
 
-        return $this->render('grower/auction/product/mylist.html.twig',[
-            'products'=>$products,
-        ]);
+        $cart = new Cart();
 
-    }
-    /**
-     * @Route("/auction/product/new",name="grower_auction_new")
-     */
-    public function newAuctionProductAction(Request $request)
-    {
+        $cart->setOwnedBy($user);
 
-        $form = $this->createForm(AuctionProductForm::class);
+        $form = $this->createForm(addToCartFormType::class, $cart);
 
         //only handles data on POST
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()){
-            $product = $form->getData();
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cart = $form->getData();
 
             $em = $this->getDoctrine()->getManager();
-            $em->persist($product);
+
+            $existingCart = $em->getRepository('AppBundle:Cart')
+                ->findMyCart($user);
+            $quantity = $request->request->get('quantity');
+            $price = $request->request->get('productPrice');
+            $currency = $request->request->get('productCurrency');
+
+            //Create The cart Item
+            $cartItem = new CartItems();
+            $cartItem->setQuantity($quantity);
+            $cartItem->setUnitPrice($price);
+            $cartItem->setProduct($product);
+            $lineTotal = ($price) * ($quantity);
+            $cartItem->setLineTotal($lineTotal);
+
+            //Update the Cart
+            if ($existingCart) {
+                $existingCart[0]->setCartAmount(($existingCart[0]->getCartAmount()) + ($lineTotal));
+                $existingCart[0]->setNrItems(($existingCart[0]->getNrItems()) + $quantity);
+                $cartItem->setCart($existingCart[0]);
+                $em->persist($existingCart[0]);
+            } else {
+                $cart->setCartAmount($lineTotal);
+                $cart->setNrItems($quantity);
+                $cart->setCartCurrency($currency);
+                $cartItem->setCart($cart);
+                $em->persist($cart);
+            }
+            $em->persist($cartItem);
             $em->flush();
 
-            $this->addFlash('success','Product Posted to Auction Successfully!');
+            $this->addFlash('success', 'Product Successfully Added to Cart!');
 
-            return $this->redirectToRoute('my_grower_product_list');
+            return $this->redirectToRoute('agent_auction_product_list');
         }
+        return $this->render('agent/auction/product-details.htm.twig', [
+            'product' => $product,
+            'form' => $form->createView()
 
-        return $this->render('grower/auction/product/new.html.twig',[
-            'productForm' => $form->createView()
         ]);
     }
     /**
-     * @Route("/auction/product/{id}/edit",name="grower_auction_product_edit")
+     * @Route("/auction/{id}/buy",name="agent_auction_buy")
      */
-    public function editAuctionProductAction(Request $request,Auction $product)
+    public function buyAction(Request $request, Product $product)
     {
-        $form = $this->createForm(AuctionProductForm::class,$product);
-
-        //only handles data on POST
-        $form->handleRequest($request);
-
-        if($form->isSubmitted() && $form->isValid()){
-            $product = $form->getData();
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($product);
-            $em->flush();
-
-            $this->addFlash('success','Product in Auction Updated Successfully!');
-
-            return $this->redirectToRoute('my_grower_auction_list');
-        }
-
-        return $this->render('grower/auction/product/edit.html.twig',[
-            'productForm' => $form->createView()
-        ]);
+        return $this->render('agent/auction/buy.htm.twig');
     }
-
     /**
-     * @Route("/growers",name="breeder_growers_list")
+     * @Route("/growers",name="agent_growers_list")
      */
     public function agentGrowersAction(Request $request = null)
     {
@@ -214,21 +280,21 @@ class AgentController extends Controller
         );
 
         return $this->render('agent/growers/list.html.twig', [
-            'growers' => $result,
+            'agents' => $result,
         ]);
 
     }
 
     /**
-     * @Route("/growers/{id}/view",name="grower_profile")
+     * @Route("/growers/{id}/view",name="agent_grower_profile")
      */
-    public function breederProfileAction()
+    public function growerProfileAction()
     {
         return $this->render('agent/growers/view.htm.twig');
     }
 
     /**
-     * @Route("/buyers",name="grower_buyer_list")
+     * @Route("/buyers",name="agent_buyer_list")
      */
     public function buyerListAction(Request $request = null)
     {
@@ -256,6 +322,13 @@ class AgentController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/buyers/{id}/view",name="agent_buyer_profile")
+     */
+    public function buyerProfileAction()
+    {
+        return $this->render('agent/buyers/view.htm.twig');
+    }
 
 
 }

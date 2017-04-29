@@ -74,7 +74,7 @@
                                     <strong class="label" style="color:black;"><span>My Account<i
                                                     class="fa fa-angle-down">&nbsp;</i></span></strong>
                                     <ul class="header links">
-                                        <li><a href="{{ path('my_profile') }}">My Account</a></li>
+                                        <li><a href="#">My Account</a></li>
                                         <li class="link wishlist" data-bind="scope: 'wishlist'">
                                             <a href="{{ path('order_list') }}">My Orders
                                                 <!-- ko if: wishlist().counter --><!-- /ko -->
@@ -98,7 +98,7 @@
                                     <strong class="label" style="color:black;"><span>My Account<i
                                                     class="fa fa-angle-down">&nbsp;</i></span></strong>
                                     <ul class="header links">
-                                        <li><a href="{{ path('my_profile') }}">My Account</a></li>
+                                        <li><a href="#">My Account</a></li>
 
                                         <li class="authorization-link" data-label="or">
                                             <a href="{{ path('security_logout') }}">
@@ -128,7 +128,7 @@
                                     <strong class="label" style="color:black;"><span>My Account<i
                                                     class="fa fa-angle-down">&nbsp;</i></span></strong>
                                     <ul class="header links">
-                                        <li><a href="{{ path('my_profile') }}">My Account</a></li>
+                                        <li><a href="#">My Account</a></li>
                                         <li class="link wishlist" data-bind="scope: 'wishlist'">
                                             <a href="{{ path('order_list') }}">Orders
                                                 <!-- ko if: wishlist().counter --><!-- /ko -->
@@ -146,6 +146,39 @@
                                         </li>
                                     </ul>
                                 </div>
+                            {% elseif is_granted('ROLE_AGENT') %}
+
+                                <div class="my-acount">
+                                    <strong class="label" style="color:black;"><span>My Account<i
+                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
+                                    <ul class="header links">
+                                        <li><a href="#">My Account</a></li>
+
+                                        <li class="authorization-link" data-label="or">
+                                            <a href="{{ path('security_logout') }}">
+                                                Logout </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="my-acount">
+                                    <strong class="label" style="color:black;"><span>Product Management<i
+                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
+                                    <ul class="header links">
+                                        <li><a href="{{ path('my_assigned_product_list') }}">Assigned Products</a></li>
+                                        <li><a href="{{ path('my_assigned_product_list') }}">Assignment Requests</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div class="my-acount">
+                                    <strong class="label" style="color:black;"><span>Order Management<i
+                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
+                                    <ul class="header links">
+
+                                        <li><a href="{{ path('agent_order_list') }}">Received Orders</a></li>
+                                        <li><a href="{{ path('my_agent_order_list') }}">My Orders</a></li>
+                                    </ul>
+                                </div>
+
                             {% endif %}
                         </div>
                     </div>
@@ -169,7 +202,7 @@
                         {% elseif is_granted('ROLE_BREEDER') %}
                             {{ include(':nav:breeder.htm.twig') }}
                         {% elseif is_granted('ROLE_AGENT') %}
-                            {{ include(':nav:buyer.htm.twig') }}
+                            {{ include(':nav:agent.htm.twig') }}
                         {% else %}
                             {{ include(':nav:nav.htm.twig') }}
 
@@ -414,95 +447,7 @@
 
                         <li class="item item-setting">Setting</li>
                     </ul>
-                    <div class="tabs-content-mobile tabs-menu">
 
-
-                        <nav class="ma-nav-mobile-container">
-                            <ul id="ma-mobilemenu" class="mobilemenu">
-                                <li class="level1"><a href="http://plazathemes.com/demo/presiden/english11/skirts.html"><span
-                                                class="name">Skirts</span></a>
-                                    <ul class="level2">
-                                        <li>
-                                            <a href="http://plazathemes.com/demo/presiden/english11/skirts/heeled-sandals.html"><span
-                                                        class="name">Heeled sandals</span></a>
-                                            <ul class="level3">
-                                                <li>
-                                                    <a href="http://plazathemes.com/demo/presiden/english11/skirts/heeled-sandals/dining-sets.html"><span
-                                                                class="name">Dining sets</span></a></li>
-                                            </ul>
-                                        </li>
-                                        <li>
-                                            <a href="http://plazathemes.com/demo/presiden/english11/skirts/polo-short-sleeve.html"><span
-                                                        class="name">Polo Short Sleeve</span></a>
-                                            <ul class="level3">
-                                                <li>
-                                                    <a href="http://plazathemes.com/demo/presiden/english11/skirts/polo-short-sleeve/long-sleeve.html"><span
-                                                                class="name">Long Sleeve</span></a></li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                                <li class="level1"><a
-                                            href="http://plazathemes.com/demo/presiden/english11/short-sleeve.html"><span
-                                                class="name">Short Sleeve</span></a>
-                                    <ul class="level2"></ul>
-                                </li>
-                                <li class="level1"><a
-                                            href="http://plazathemes.com/demo/presiden/english11/catalog/category/view/s/trousers/id/139/"><span
-                                                class="name">Trousers</span></a>
-                                    <ul class="level2"></ul>
-                                </li>
-                                <li class="level1"><a
-                                            href="http://plazathemes.com/demo/presiden/english11/catalog/category/view/s/dresses/id/231/"><span
-                                                class="name">Dresses</span></a>
-                                    <ul class="level2"></ul>
-                                </li>
-                                <li class="level1"><a href="http://plazathemes.com/demo/presiden/english11/shorts.html"><span
-                                                class="name">Shorts</span></a>
-                                    <ul class="level2"></ul>
-                                </li>
-                            </ul>
-                        </nav>
-
-                    </div>
-                    <div class="tabs-content-mobile tabs-setting" style="display:none;">
-                        <ul class="header links">
-                            <li><a href="http://plazathemes.com/demo/presiden/english11/customer/account/">My
-                                    Account</a></li>
-                            <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                <a href="http://plazathemes.com/demo/presiden/english11/wishlist/">My Wish List
-                                    <!-- ko if: wishlist().counter --><!-- /ko -->
-                                </a>
-                            </li>
-
-                            <li class="authorization-link" data-label="or">
-                                <a href="http://plazathemes.com/demo/presiden/english11/customer/account/login/">
-                                    Sign In </a>
-                            </li>
-                        </ul>
-
-                        <div class="switcher currency switcher-currency" id="switchers-currency">
-                            <!--<strong class="label switcher-label"><span></span></strong>-->
-                            <div class="actions dropdown options switcher-options">
-                                <div class="action toggle switcher-trigger" id="switchers-currency-trigger">
-                                    <strong class="language-USD">
-                                        <span>KSH<i class="fa fa-angle-down">&nbsp;</i></span>
-                                    </strong>
-                                </div>
-                                <ul class="dropdown switcher-dropdown">
-                                    <li class="currency-EUR switcher-option">
-                                        <a href="#">KSH</a>
-                                    </li>
-                                    <li class="currency-EUR switcher-option">
-                                        <a href="#">USD</a>
-                                    </li>
-                                    <li class="currency-EUR switcher-option">
-                                        <a href="#">EUR</a>
-                                    </li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

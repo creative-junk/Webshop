@@ -1,4 +1,4 @@
-{% extends 'base-catalog.html.twig' %}
+{% extends 'base.html.twig' %}
 {% block title %}iFlora Direct Market{% endblock %}
 {% block pageclass %}
 <body data-container="body"
@@ -73,7 +73,7 @@
                             <div class="product-item-info" data-container="product-grid">
                                 <div class=" product-item-images">
                                     <a class="product photo product-item-photo"
-                                       href="/home/direct-market/{{ product.id }}/view" tabindex="-1">
+                                       href="{{ path('buyer_shop') }}{{ product.id }}/view" tabindex="-1">
 						<span class="product-image-container" style="width: 350px;">
 						<span class="product-image-wrapper" style="padding-bottom: 126%;">
 						<img alt="{{ product.title }}" class="product-image-photo" height="441"
@@ -84,7 +84,7 @@
                                     <div class="content-name">
                                         <strong class="product name product-item-name">
                                             <a class="product-item-link"
-                                               href="/home/direct-market/{{ product.id }}/view">
+                                               href="{{ path('buyer_shop') }}{{ product.id }}/view">
                                                 {{ product.title }} </a></strong>
                                         <a aria-label="WishList" class="wishlist" data-action="add-to-wishlist" href="#"
                                            role="button" title="WishList">

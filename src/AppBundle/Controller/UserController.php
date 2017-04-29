@@ -195,7 +195,7 @@ class UserController extends Controller
      */
     public function agentRegisteredAction()
     {
-        return $this->render('user/breeder-registered.htm.twig');
+        return $this->render('user/agent-registered.htm.twig');
     }
     /**
      * @Route("/forgot-password",name="password_restore")

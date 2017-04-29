@@ -10,6 +10,7 @@
 namespace AppBundle\Controller\User;
 
 
+use AppBundle\Entity\Auction;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\CartItems;
 use AppBundle\Entity\Product;
@@ -158,13 +159,98 @@ class HomeController extends Controller
     }
 
     /**
-     * @Route("/auction",name="buyer_auction")
+     * @Route("/auction/",name="buyer_auction")
      */
-    public function buyerAuctionAction()
+    public function auctionListAction(Request $request)
     {
-        return $this->render('home/home.htm.twig');
+
+        $em = $this->getDoctrine()->getManager();
+
+        $queryBuilder = $em->getRepository('AppBundle:Auction')
+            ->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->orderBy('product.createdAt', 'DESC');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('buyer/auction/list.htm.twig', [
+            'products' => $result,
+        ]);
+
+
     }
 
+    /**
+     * @Route("/auction/{id}/view",name="buyer_auction_product_details")
+     */
+    public function auctionProductDetailsAction(Request $request, Auction $product)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $cart = new Cart();
+
+        $cart->setOwnedBy($user);
+
+        $form = $this->createForm(addToCartFormType::class, $cart);
+
+        //only handles data on POST
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $cart = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+
+            $existingCart = $em->getRepository('AppBundle:Cart')
+                ->findMyCart($user);
+            $quantity = $request->request->get('quantity');
+            $price = $request->request->get('productPrice');
+            $currency = $request->request->get('productCurrency');
+
+            //Create The cart Item
+            $cartItem = new CartItems();
+            $cartItem->setQuantity($quantity);
+            $cartItem->setUnitPrice($price);
+            $cartItem->setProduct($product);
+            $lineTotal = ($price) * ($quantity);
+            $cartItem->setLineTotal($lineTotal);
+
+            //Update the Cart
+            if ($existingCart) {
+                $existingCart[0]->setCartAmount(($existingCart[0]->getCartAmount()) + ($lineTotal));
+                $existingCart[0]->setNrItems(($existingCart[0]->getNrItems()) + $quantity);
+                $cartItem->setCart($existingCart[0]);
+                $em->persist($existingCart[0]);
+            } else {
+                $cart->setCartAmount($lineTotal);
+                $cart->setNrItems($quantity);
+                $cart->setCartCurrency($currency);
+                $cartItem->setCart($cart);
+                $em->persist($cart);
+            }
+            $em->persist($cartItem);
+            $em->flush();
+
+            $this->addFlash('success', 'Product Successfully Added to Cart!');
+
+            return $this->redirectToRoute('agent_auction_product_list');
+        }
+        return $this->render('buyer/auction/product-details.htm.twig', [
+            'product' => $product,
+            'form' => $form->createView()
+
+        ]);
+    }
     /**
      * @Route("/roses",name="buyer_roses")
      */

@@ -8,20 +8,16 @@
 <div class="category-view">
     <div class="page-title-wrapper">
         <h1 class="page-title" id="page-title-heading" aria-labelledby="page-title-heading toolbar-amount">
-            <span class="base" data-ui-id="page-title-wrapper">Auction Market</span></h1>
+            <span class="base" data-ui-id="page-title-wrapper">Direct Market</span></h1>
     </div>
     <div class="breadcrumbs">
         <ul class="items">
             <li class="item home">
-                <a href="{{ path('grower_dashboard') }}" title="Go to Home Page">
+                <a href="{{ path('agent_dashboard') }}" title="Go to Home Page">
                     Home </a>
             </li>
-            <li class="item home">
-                <a href="{{ path('my_grower_auction_list') }}" title="Go to Home Page">
-                    Auction Market </a>
-            </li>
             <li class="item category131">
-                <strong>Edit Product</strong>
+                <strong>Assigned Products</strong>
             </li>
         </ul>
     </div>
@@ -112,7 +108,7 @@
 
 
         </div>
-        {% include(':agent:sidebar.htm.twig') %}
+        {% include(':grower:sidebar.htm.twig') %}
 
     </div>
 </main>
