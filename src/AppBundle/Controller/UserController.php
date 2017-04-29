@@ -108,7 +108,13 @@ class UserController extends Controller
      */
     public function registerBreederAction(Request $request)
     {
-        $form = $this->createForm(UserRegistrationForm::class);
+        $user = new User();
+        $user->setUserType('breeder');
+        $user->setRoles(["ROLE_BREEDER"]);
+        $user->setIsActive(true);
+        $user->setCurrency('KSH');
+
+        $form = $this->createForm(UserRegistrationForm::class, $user);
 
 
         $form->handleRequest($request);
@@ -120,26 +126,42 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('success','Welcome '.$user->getEmail().' to Iflora');
+            /*     $this->addFlash('success','Welcome '.$user->getEmail().' to Iflora');
 
-            return $this->get('security.authentication.guard_handler')
-                ->authenticateUserAndHandleSuccess(
-                    $user,
-                    $request,
-                    $this->get('app.security.login_form_authenticator'),
-                    'main'
-                );
+                 return $this->get('security.authentication.guard_handler')
+                     ->authenticateUserAndHandleSuccess(
+                         $user,
+                         $request,
+                         $this->get('app.security.login_form_authenticator'),
+                         'main'
+                     );
+            */
+            return $this->redirectToRoute('breeder-registered');
         }
         return $this->render('user/breeder-register.htm.twig', [
             'form' =>$form->createView()
         ]);
+    }
+
+    /**
+     * @Route("/breeder/registered",name="breeder-registered")
+     */
+    public function breederRegisteredAction()
+    {
+        return $this->render('user/breeder-registered.htm.twig');
     }
     /**
      * @Route("/register/agent",name="agent_register")
      */
     public function registerAgentAction(Request $request)
     {
-        $form = $this->createForm(UserRegistrationForm::class);
+        $user = new User();
+        $user->setUserType('agent');
+        $user->setRoles(["ROLE_AGENT"]);
+        $user->setIsActive(true);
+        $user->setCurrency('KSH');
+
+        $form = $this->createForm(UserRegistrationForm::class, $user);
 
 
         $form->handleRequest($request);
@@ -151,21 +173,30 @@ class UserController extends Controller
             $em->persist($user);
             $em->flush();
 
-            $this->addFlash('success', 'Welcome ' . $user->getEmail() . ' to Iflora');
+            /*  $this->addFlash('success', 'Welcome ' . $user->getEmail() . ' to Iflora');
 
-            return $this->get('security.authentication.guard_handler')
-                ->authenticateUserAndHandleSuccess(
-                    $user,
-                    $request,
-                    $this->get('app.security.login_form_authenticator'),
-                    'main'
-                );
+             return $this->get('security.authentication.guard_handler')
+                  ->authenticateUserAndHandleSuccess(
+                      $user,
+                      $request,
+                      $this->get('app.security.login_form_authenticator'),
+                      'main'
+                  );
+             */
+            return $this->redirectToRoute('agent-registered');
         }
         return $this->render('user/agent-register.htm.twig', [
             'form' => $form->createView()
         ]);
     }
 
+    /**
+     * @Route("/agent/registered",name="agent-registered")
+     */
+    public function agentRegisteredAction()
+    {
+        return $this->render('user/breeder-registered.htm.twig');
+    }
     /**
      * @Route("/forgot-password",name="password_restore")
      */

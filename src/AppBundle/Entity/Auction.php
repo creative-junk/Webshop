@@ -10,12 +10,16 @@
 namespace AppBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Gedmo\Mapping\Annotation as Gedmo;
 
 /**
  * @ORM\Entity(repositoryClass="AppBundle\Repository\AuctionRepository")
  * @ORM\Table(name="auction")
- *
+ * @ORM\HasLifecycleCallbacks
+ * @Vich\Uploadable
  */
 class Auction
 {
@@ -26,10 +30,39 @@ class Auction
      */
     private $id;
     /**
-     *
-     * @ORM\Column(type="string",nullable=true)
+     * @Assert\NotBlank()
+     * @ORM\Column(type="string")
+     */
+    private $title;
+    /**
+     * @Gedmo\Slug(fields={"title"},updatable=false)
+     * @ORM\Column(length=255, unique=true)
      */
     private $slug;
+    /**
+     * @Assert\NotBlank()
+     * @ORM\Column(type="text")
+     */
+    private $description;
+    /**
+     * @Assert\NotBlank()
+     * @ORM\Column(type="text")
+     */
+    private $summary;
+    /**
+     * @Vich\UploadableField(mapping="product_image", fileNameProperty="imageName", size="imageSize")
+     * @var File
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $imageName;
+    /**
+     * @ORM\Column(type="integer",nullable=true)
+     */
+    private $imageSize;
     /**
      * @ORM\Column(type="string")
      */
@@ -66,12 +99,7 @@ class Auction
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
-    /**
-     * @Assert\NotBlank()
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $product;
+
     /**
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
@@ -311,5 +339,106 @@ class Auction
         $this->bundlePrice = $bundlePrice;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * @param mixed $title
+     */
+    public function setTitle($title)
+    {
+        $this->title = $title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getDescription()
+    {
+        return $this->description;
+    }
+
+    /**
+     * @param mixed $description
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSummary()
+    {
+        return $this->summary;
+    }
+
+    /**
+     * @param mixed $summary
+     */
+    public function setSummary($summary)
+    {
+        $this->summary = $summary;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageName()
+    {
+        return $this->imageName;
+    }
+
+    /**
+     * @param mixed $imageName
+     */
+    public function setImageName($imageName)
+    {
+        $this->imageName = $imageName;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getImageSize()
+    {
+        return $this->imageSize;
+    }
+
+    /**
+     * @param mixed $imageSize
+     */
+    public function setImageSize($imageSize)
+    {
+        $this->imageSize = $imageSize;
+    }
+
+    /**
+     * @return File|null
+     */
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    /**
+     * @param File|\Symfony\Component\HttpFoundation\File\UploadedFile $imageFile
+     * @return Product
+     */
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+        if ($image) {
+            //Lets make sure at least one field changes so Doctrine can process the file
+            $this->updatedAt = new \DateTimeImmutable();
+        }
+        return $this;
+    }
 
 }

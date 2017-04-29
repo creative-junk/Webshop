@@ -5,7 +5,7 @@ namespace AppBundle\Controller;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\CartItems;
 use AppBundle\Entity\Product;
-use AppBundle\Entity\UserOrder;
+use AppBundle\Entity\User;
 use AppBundle\Form\addToCartFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -28,10 +28,11 @@ class CartController extends Controller
                 ->findAllItemsInMyCartOrderByDate($cart[0]);
         }else{
             $cartItems="";
+            $cart = "";
         }
-        return $this->render('cart.htm.twig',[
+        return $this->render(':partials/iflora:macrocart.htm.twig', [
             'cartItems'=>$cartItems,
-            'cart' => $cart[0]
+            'cart' => $cart
         ]);
     }
 
@@ -46,11 +47,11 @@ class CartController extends Controller
         $cart = $em->getRepository('AppBundle:Cart')
             ->findMyCart($user);
         if ($cart) {
-            return $this->render(':partials:minicart.html.twig', [
+            return $this->render(':partials/iflora:minicart.htm.twig', [
                 'cart' => $cart[0],
             ]);
         } else {
-            return $this->render(':partials:minicart.html.twig', [
+            return $this->render(':partials/iflora:minicart.htm.twig', [
                 'cart' => null
             ]);
         }

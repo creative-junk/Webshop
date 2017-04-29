@@ -2682,6 +2682,9 @@ dd {
     position: relative;
 }
 
+.showcart:hover .links {
+    display: block;
+}
 .my-acount .label {
     font-weight: normal;
     font-size: 12px;

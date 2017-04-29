@@ -29,6 +29,16 @@ class AgentController extends Controller
 {
 
     /**
+     * @Route("/",name="agent_dashboard")
+     */
+    public function dashboardAction()
+    {
+
+        return $this->render(':agent:home.htm.twig');
+        //dump($products);die;
+        //return new Response('Product Saved');
+    }
+    /**
      * @Route("/product/",name="agent_product_list")
      */
     public function listAction(){
@@ -178,5 +188,74 @@ class AgentController extends Controller
             'productForm' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/growers",name="breeder_growers_list")
+     */
+    public function agentGrowersAction(Request $request = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'grower');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/growers/list.html.twig', [
+            'growers' => $result,
+        ]);
+
+    }
+
+    /**
+     * @Route("/growers/{id}/view",name="grower_profile")
+     */
+    public function breederProfileAction()
+    {
+        return $this->render('agent/growers/view.htm.twig');
+    }
+
+    /**
+     * @Route("/buyers",name="grower_buyer_list")
+     */
+    public function buyerListAction(Request $request = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'buyer');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/buyers/list.html.twig', [
+            'agents' => $result,
+        ]);
+    }
+
+
 
 }

@@ -76,10 +76,15 @@
                                     <ul class="header links">
                                         <li><a href="{{ path('my_profile') }}">My Account</a></li>
                                         <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                            <a href="{{ path('my_compare') }}">My Wish List
+                                            <a href="{{ path('order_list') }}">My Orders
                                                 <!-- ko if: wishlist().counter --><!-- /ko -->
                                             </a>
                                         </li>
+                                        <!-- <li class="link wishlist" data-bind="scope: 'wishlist'">
+                                            <a href="{{ path('my_compare') }}">My Wish List
+                                                <!-- ko if: wishlist().counter --><!-- /ko --
+                                            </a>
+                                        </li> -->
 
                                         <li class="authorization-link" data-label="or">
                                             <a href="{{ path('security_logout') }}">
@@ -118,6 +123,29 @@
                                         <li><a href="{{ path('my_grower_order_list') }}">My Orders</a></li>
                                     </ul>
                                 </div>
+                            {% elseif is_granted('ROLE_BREEDER') %}
+                                <div class="my-acount">
+                                    <strong class="label" style="color:black;"><span>My Account<i
+                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
+                                    <ul class="header links">
+                                        <li><a href="{{ path('my_profile') }}">My Account</a></li>
+                                        <li class="link wishlist" data-bind="scope: 'wishlist'">
+                                            <a href="{{ path('order_list') }}">Orders
+                                                <!-- ko if: wishlist().counter --><!-- /ko -->
+                                            </a>
+                                        </li>
+                                        <!-- <li class="link wishlist" data-bind="scope: 'wishlist'">
+                                            <a href="{{ path('my_compare') }}">My Wish List
+                                                <!-- ko if: wishlist().counter --><!-- /ko --
+                                            </a>
+                                        </li> -->
+
+                                        <li class="authorization-link" data-label="or">
+                                            <a href="{{ path('security_logout') }}">
+                                                Logout </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             {% endif %}
                         </div>
                     </div>
@@ -139,7 +167,7 @@
                         {% elseif is_granted('ROLE_GROWER') %}
                             {{ include(':nav:grower.htm.twig') }}
                         {% elseif is_granted('ROLE_BREEDER') %}
-                            {{ include(':nav:buyer.htm.twig') }}
+                            {{ include(':nav:breeder.htm.twig') }}
                         {% elseif is_granted('ROLE_AGENT') %}
                             {{ include(':nav:buyer.htm.twig') }}
                         {% else %}
@@ -336,101 +364,41 @@
 
                                 </form>
                             </div>
+                            <script type="text/javascript">
+                                function show_cart() {
+                                    document.getElementById('ui-id-1').style.display = 'block';
+                                }
+                                function hide_cart() {
+                                    document.getElementById('ui-id-1').style.display = 'none';
+                                }
+                            </script>
+                            {% if is_granted('ROLE_BUYER') %}
+                                <div data-block="minicart" class="minicart-wrapper my-acount">
+                                    <a class="action showcart" href='javascript:;' onclick='show_cart();'>
+                                        <span class="text">Shopping Cart</span>
+                                        {{ render(controller('AppBundle:Cart:cart')) }}
+                                    </a>
 
-                            <div data-block="minicart" class="minicart-wrapper">
-                                <a class="action showcart" href="" data-bind="scope: 'minicart_content'">
-                                    <span class="text">Shopping Cart</span>
-        <span class="counter qty empty"
-              data-bind="css: { empty: !!getCartParam('summary_count') == false }, blockLoader: isLoading">
-            <span class="counter-number"><!-- ko text: getCartParam('summary_count') -->0<!-- /ko --></span>
-            <span class="counter-label">
-            <!-- ko if: getCartParam('summary_count') --><!-- /ko -->
-            </span>
-        </span>
-                                </a>
-
-                                <script>
-                                    window.checkout = {
-                                        "shoppingCartUrl": "",
-                                        "checkoutUrl": "",
-                                        "updateItemQtyUrl": "",
-                                        "removeItemUrl": "",
-                                        "imageTemplate": "",
-                                        "baseUrl": "",
-                                        "minicartMaxItemsVisible": 5,
-                                        "websiteId": "1",
-                                        "customerLoginUrl": "",
-                                        "isRedirectRequired": false,
-                                        "autocomplete": "off",
-                                        "captcha": {
-                                            "user_login": {
-                                                "isCaseSensitive": false,
-                                                "imageHeight": 50,
-                                                "imageSrc": "",
-                                                "refreshUrl": "",
-                                                "isRequired": false
-                                            },
-                                            "guest_checkout": {
-                                                "isCaseSensitive": false,
-                                                "imageHeight": 50,
-                                                "imageSrc": "",
-                                                "refreshUrl": "",
-                                                "isRequired": false
-                                            }
-                                        }
-                                    };
-                                </script>
-
-                                <div class="ui-dialog ui-widget ui-widget-content ui-corner-all ui-front mage-dropdown-dialog"
-                                     tabindex="-1" role="dialog" aria-describedby="ui-id-1" style="display: none;">
-                                    <div class="block block-minicart empty ui-dialog-content ui-widget-content"
-                                         data-role="dropdownDialog" id="ui-id-1" style="display: block;">
-                                        <div id="minicart-content-wrapper" data-bind="scope: 'minicart_content'">
-                                            <!-- ko template: getTemplate() -->
-                                            <div class="block-title">
-                                                <strong>
-                                                    <span class="text"><!-- ko i18n: 'My Cart' --><span>My Cart</span><!-- /ko --></span>
-        <span class="qty empty" data-bind="css: { empty: !!getCartParam('summary_count') == false },
-                       attr: { title: $t('Items in Cart') }" title="Items in Cart">
-            <!-- ko text: getCartParam('summary_count') -->0<!-- /ko -->
-        </span>
-                                                </strong>
-                                            </div>
-
-                                            <div class="block-content">
-                                                <button type="button" id="btn-minicart-close" class="action close"
-                                                        data-action="close" data-bind="attr: { title: $t('Close') }"
-                                                        title="Close">
-                                                    <span><!-- ko i18n: 'Close' --><span>Close</span><!-- /ko --></span>
-                                                </button>
-
-                                                <!-- ko if: getCartParam('summary_count') --><!-- /ko -->
-
-                                                <!-- ko if: getCartParam('summary_count') --><!-- /ko -->
-
-                                                <!-- ko ifnot: getCartParam('summary_count') -->
-                                                <strong class="subtitle empty" data-bind="visible: closeSidebar()">
-                                                    <!-- ko i18n: 'You have no items in your shopping cart.' --><span>You have no items in your shopping cart.</span><!-- /ko -->
-                                                </strong>
-                                                <!-- ko if: getCartParam('cart_empty_message') --><!-- /ko -->
-                                                <!-- /ko -->
-
-                                                <!-- ko if: getCartParam('summary_count') --><!-- /ko -->
-
-                                                <div id="minicart-widgets" class="minicart-widgets">
-                                                    <!-- ko foreach: getRegion('promotion') -->
-                                                    <!-- ko template: getTemplate() -->
-                                                    <!-- ko foreach: {data: elems, as: 'element'} --><!-- /ko -->
-                                                    <!-- /ko -->
-                                                    <!-- /ko -->
-                                                </div>
-                                            </div>
-                                            <!-- ko foreach: getRegion('sign-in-popup') --><!-- /ko -->
-                                            <!-- /ko -->
-                                        </div>
+                                    <div id="macrocart">
+                                        {{ render(controller('AppBundle:Cart:index')) }}
                                     </div>
                                 </div>
-                            </div>
+                            {% elseif is_granted('ROLE_GROWER') %}
+                                <div data-block="minicart" class="minicart-wrapper my-acount">
+                                    <a class="action showcart" href='javascript:;' onclick='show_cart();'>
+                                        <span class="text">Shopping Cart</span>
+                                        {{ render(controller('AppBundle:Cart:cart')) }}
+                                    </a>
+
+                                    <div id="macrocart">
+                                        {{ render(controller('AppBundle:Cart:index')) }}
+                                    </div>
+                                </div>
+                            {% else %}
+
+
+                            {% endif %}
+
 
 
                         </div>

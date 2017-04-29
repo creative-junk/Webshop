@@ -13,7 +13,7 @@
         <div class="breadcrumbs">
             <ul class="items">
                 <li class="item home">
-                    <a href="{{ path('home') }}" title="Go to Home Page">
+                    <a href="{{ path('grower_dashboard') }}" title="Go to Home Page">
                         Home </a>
                 </li>
                 <li class="item category131">
@@ -71,7 +71,7 @@
                             <li class="item product product-item">
                                 <div class="product-item-info" data-container="product-grid">
                                     <div class=" product-item-images">
-                                        <a href="/grower/product/my/{{ product.id }}/view"
+                                        <a href="/grower/product/{{ product.id }}/edit""
                                            class="product photo product-item-photo" tabindex="-1">
 
 <span class="product-image-container" style="width:350px;">
@@ -85,7 +85,8 @@
                                     <div class="product-item-details">
                                         <div class="content-name">
                                             <strong class="product name product-item-name">
-                                                <a class="product-item-link" href="/grower/product/{{ product.id }}">
+                                                <a class="product-item-link"
+                                                   href="/grower/product/{{ product.id }}/edit">
                                                     {{ product.title }}                            </a>
                                             </strong>
 

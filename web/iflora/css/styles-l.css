@@ -1200,8 +1200,9 @@
     }
 
     .minicart-wrapper .block-minicart {
-        right: -15px;
+        margin-left: -335px;
         width: 390px;
+
     }
 
     .opc-wrapper {

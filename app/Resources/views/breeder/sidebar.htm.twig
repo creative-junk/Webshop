@@ -1,26 +1,22 @@
 
 <!-- sidebar menu -->
-<div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
+<div class="sidebar sidebar-main">
     <div class="menu_section">
-        <h3>General</h3>
+        <h3>Catalog Management </h3>
         <ul class="nav side-menu">
-            <li><a><i class="fa fa-home"></i> Home <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="{{ path('breeder_dashboard') }}">Dashboard</a></li>
-                </ul>
-            </li>
+            <li>
+                <ul class="nav child_menu admin">
 
-            <li><a><i class="fa fa-folder-open"></i> Catalog Management <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
+                    <li><a href="{{ path('my_breeder_seedling_list') }}"><i class="fa fa-cubes" aria-hidden="true"></i>
+                            My
+                            Products</a></li>
+                    <li><a href="{{ path('breeder_seedlings_new') }}"><i class="fa fa-plus-circle"
+                                                                         aria-hidden="true"></i>
+                            New Product</a></li>
+                    <li><a href="{{ path('breeder_order_list') }}"><i class="fa fa-shopping-cart"
+                                                                      aria-hidden="true"></i>
+                            Received Orders</a></li>
 
-                    <li><a href="{{ path('my_breeder_seedling_list') }}">Seedlings</a></li>
-                    <li><a href="{{ path('breeder_seedlings_new') }}">New Product</a></li>
-                </ul>
-            </li>
-            <li><a><i class="fa fa-cart-plus"></i> Order Management <span class="fa fa-chevron-down"></span></a>
-                <ul class="nav child_menu">
-                    <li><a href="{{ path('breeder_order_list') }}">Received Orders</a></li>
-                    <li><a href="{{ path('my_seedlings_order_list') }}">My Orders</a></li>
                 </ul>
             </li>
 

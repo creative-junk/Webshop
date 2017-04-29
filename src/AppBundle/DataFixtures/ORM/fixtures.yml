@@ -38,14 +38,16 @@ AppBundle\Entity\Product:
 
 AppBundle\Entity\Auction:
     auction{1..20}:
-        slug: null
+        title: '<product()>'
+        description: '<sentence()>'
+        summary:    '<sentence()>'
         quantity: '<numberBetween($min = 1000, $max = 9000)>'
         currency: '$'
         bundlePrice:   '<randomFloat($nbMaxDecimals = 2, $min = 1000, $max = 10000)>'
         finalPrice:   '<randomFloat($nbMaxDecimals = 2, $min = 1000, $max = 10000)>'
         isActive: '<boolean(75)>'
         isAuthorized: '<boolean(75)>'
-        product: '@product*'
+        imageName: '<imageurl()>'
         user:       '@user*'
         agent:       '@user*'
         createdAt: "<dateTimeThisYear($max = 'now', $timezone = date_default_timezone_get())>"

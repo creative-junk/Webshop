@@ -37,7 +37,8 @@
                                     {{ form_row(loginform._password) }}
 
                                 </div>
-
+                                <input type="hidden" name="_target_path" value="breeder_dashboard"/>
+                                <input type="hidden" name="_failure_path" value="breeder_login"/>
                                 <div class="actions-toolbar">
                                     <div class="primary">
                                         <button type="submit" class="action login primary" name="send" id="send2"><span>Sign In</span>
@@ -59,7 +60,7 @@
 
                             <div class="actions-toolbar">
                                 <div class="primary">
-                                    <a href="http://plazathemes.com/demo/presiden/english11/customer/account/create/"
+                                    <a href="{{ path('breeder_register') }}"
                                        class="action create primary"><span>Create an Account</span></a>
                                 </div>
                             </div>

@@ -5242,13 +5242,13 @@ body.catalog-product-compare-index .action.print {
 }
 
 .minicart-wrapper .block-minicart:before {
-    left: 10px;
-    top: -12px;
+    left: 6px;
+    top: 33px;
 }
 
 .minicart-wrapper .block-minicart:after {
-    left: 9px;
-    top: -14px;
+    left: 6px;
+    top: 30px;
 }
 
 .minicart-wrapper.active {
@@ -5305,8 +5305,8 @@ body.catalog-product-compare-index .action.print {
     font-weight: 400;
     height: 40px;
     position: absolute;
-    right: 0;
-    top: 0;
+    right: -40px;
+    top: 17px;
     width: 40px;
 }
 

@@ -18,7 +18,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 
 /**
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\UserRepository")
  * @ORM\Table(name="user")
  * @UniqueEntity(fields={"email"},message="It looks like you already have an account!")
  */
@@ -304,5 +304,11 @@ class User implements UserInterface
     {
         $this->lastLoginTime = $lastLoginTime;
     }
+
+    public function __toString()
+    {
+        return $this->getFirstName() . ' ' . $this->getLastName();
+    }
+
 
 }

@@ -36,25 +36,7 @@
 				<span class="base" data-ui-id="page-title-wrapper" itemprop="name">
 				{{ product.title }}</span></h1>
                     </div>
-                    <div class="product-reviews-summary" itemprop="aggregateRating" itemscope=""
-                         itemtype="http://schema.org/AggregateRating">
-                        <div class="rating-summary">
-                            <span class="label"><span>Rating:</span></span>
 
-                            <div class="rating-result" title="80%">
-						<span style="width: 80%"><span>
-						<span itemprop="ratingValue">80</span>% of
-						<span itemprop="bestRating">100</span></span></span>
-                            </div>
-                        </div>
-                        <div class="reviews-actions">
-                            <a class="action view"
-                               href="http://plazathemes.com/demo/presiden/english11/orion-two-tone-fitted.html#reviews">
-                                <span itemprop="reviewCount">1</span>&nbsp;<span>Review</span></a>
-                            <a class="action add"
-                               href="http://plazathemes.com/demo/presiden/english11/orion-two-tone-fitted.html#review-form">
-                                Add Your Review</a></div>
-                    </div>
                     <div class="product-info-price">
                         <div class="price-box price-final_price" data-product-id="63" data-role="priceBox">
 					<span class="price-container price-final_price tax weee">
@@ -74,14 +56,10 @@
                         </div>
                     </div>
                     <div class="product-add-form">
-                        <form id="product_addtocart_form"
-                              action="http://plazathemes.com/demo/presiden/english11/checkout/cart/add/uenc/aHR0cDovL3BsYXphdGhlbWVzLmNvbS9kZW1vL3ByZXNpZGVuL2VuZ2xpc2gxMS9vcmlvbi10d28tdG9uZS1maXR0ZWQuaHRtbA,,/product/63/"
-                              method="post" novalidate="novalidate">
-                            <input name="product" type="hidden" value="63">
-                            <input name="selected_configurable_option" type="hidden" value="">
-                            <input id="related-products-field" name="related_product" type="hidden" value="">
-                            <input name="form_key" type="hidden" value="N6iU4ou6LFcR52yR">
-
+                        {{ form_start(form) }}
+                        <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
+                        <input type="hidden" name="productPrice" value="{{ product.price }}"/>
+                        <input type="hidden" name="productId" value="{{ product.id }}"/>
                             <div class="box-tocart">
                                 <div class="fieldset">
                                     <div class="field qty">
@@ -100,7 +78,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        {{ form_end(form) }}
                     </div>
                     <script>
                         require([

@@ -33,36 +33,38 @@ class BreederController extends Controller
      */
     public function dashboardAction(){
 
-        return $this->render(':breeder:dashboard.htm.twig');
+        return $this->render(':breeder:home.htm.twig');
         //dump($products);die;
         //return new Response('Product Saved');
     }
-    /**
-     * @Route("/product/",name="breeder_product_list")
-     */
-    public function listAction(){
 
-        $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:Product')
-            ->findAllActiveProductsOrderByDate();
-
-        return $this->render('breeder/product/list.html.twig',[
-            'products'=>$products,
-        ]);
-
-    }
     /**
      * @Route("/seedling/my",name="my_breeder_seedling_list")
      */
-    public function myProductListAction(){
+    public function myProductListAction(Request $request)
+    {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $em=$this->getDoctrine()->getManager();
-        $products = $em->getRepository('AppBundle:Product')
-            ->findAllMyActiveProductsOrderByDate($user);
-
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:Product')
+            ->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('product.isSeedling = :isSeedling')
+            ->setParameter('isSeedling', true)
+            ->orderBy('product.createdAt', 'DESC');
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
         return $this->render('breeder/seedlings/mylist.html.twig',[
-            'products'=>$products,
+            'products' => $result,
         ]);
 
     }
@@ -126,6 +128,45 @@ class BreederController extends Controller
             'productForm' => $form->createView()
         ]);
     }
+
+    /**
+     * @Route("/growers",name="breeder_growers_list")
+     */
+    public function buyerGrowersAction(Request $request = null)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'grower');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('breeder/growers/list.html.twig', [
+            'growers' => $result,
+        ]);
+
+    }
+
+    /**
+     * @Route("/growers/{id}/view",name="grower_profile")
+     */
+    public function breederProfileAction()
+    {
+        return $this->render('breeder/growers/view.htm.twig');
+    }
+
     /**
      * @Route("/orders/",name="breeder_order_list")
      */

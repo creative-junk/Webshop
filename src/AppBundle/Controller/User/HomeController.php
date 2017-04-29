@@ -176,19 +176,82 @@ class HomeController extends Controller
     /**
      * @Route("/growers",name="buyer_growers")
      */
-    public function buyerGrowersAction()
+    public function buyerGrowersAction(Request $request = null)
     {
-        return $this->render('home/home.htm.twig');
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'grower');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/growers/list.html.twig', [
+            'growers' => $result,
+        ]);
+
     }
 
     /**
      * @Route("/agents",name="buyer_agents")
      */
-    public function buyerAgentsAction()
+    public function buyerAgentsAction(Request $request = null)
     {
-        return $this->render('home/home.htm.twig');
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'agent');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/agents/list.html.twig', [
+            'agents' => $result,
+        ]);
+
     }
 
+    /**
+     * @Route("/agents/{id}/view",name="view_agent")
+     */
+    public function agentProfileActionAction()
+    {
+
+        return $this->render('home/agents/view.htm.twig');
+
+    }
+
+    /**
+     * @Route("/growers/{id}/view",name="view_grower")
+     */
+    public function growerProfileActionAction()
+    {
+
+        return $this->render('home/growers/view.htm.twig');
+
+    }
     /**
      * @Route("/orders/",name="my_order_list")
      */
