@@ -28,6 +28,39 @@ class ProductFormType extends AbstractType
                 ),
             ))
             ->add('price',NumberType::class)
+            ->add('vaselife', NumberType::class, [
+                'required' => false,
+                'attr' => ['placeholder' => 'Number of Days']
+            ])
+            ->add('stemLength', NumberType::class, [
+                'required' => false,
+                'attr' => ['placeholder' => 'CM']
+            ])
+            ->add('headsize', NumberType::class, [
+                'required' => false,
+                'attr' => ['placeholder' => 'Inches']
+            ])
+            ->add('quality')
+            ->add('color', ChoiceType::class, [
+                'choices' => array(
+                    'Pink' => 'Pink',
+                    'Red' => 'Red',
+                    'Yellow' => 'Yellow',
+                    'White' => 'White',
+                    'Peach' => 'Peach',
+                ),
+                'placeholder' => 'Choose a Color'
+            ])
+            ->add('season', ChoiceType::class, [
+                'choices' => array(
+                    'All Seasons' => 'All Seasons',
+                    'Winter' => 'Winter',
+                    'Spring' => 'Spring',
+                    'Summer' => 'Summer',
+                    'Fall' => 'Fall',
+                ),
+                'placeholder' => 'Choose a Season'
+            ])
             ->add('category',null,[
                 'placeholder'=>'Choose a Category'
             ]);

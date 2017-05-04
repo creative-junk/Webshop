@@ -1,0 +1,80 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ grower.firstName }}  {{ grower.lastName }}
+{% endblock %}
+{% block pageclass %}
+<body data-container="body"
+      class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
+{% endblock %}
+{% block body %}
+    <div class="category-view">
+        <div class="page-title-wrapper">
+            <h1 class="page-title" id="page-title-heading" aria-labelledby="page-title-heading toolbar-amount">
+                <span class="base" data-ui-id="page-title-wrapper">Growers</span></h1>
+        </div>
+        <div class="breadcrumbs">
+            <ul class="items">
+                <li class="item home">
+                    <a href="#" title="Go to Home Page">
+                        Home </a>
+                </li>
+                <li class="item home">
+                    <a href="{{ path('buyer_growers') }}" title="Go to Home Page">
+                        Growers </a>
+                </li>
+                <li class="item product">
+                    <strong>{{ grower.firstName }} {{ grower.lastName }}</strong>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <main id="maincontent" class="page-main">
+
+        <div class="page messages">
+            <div data-placeholder="messages">
+            </div>
+            <div data-bind="scope: 'messages'">
+                <div class="messages" data-bind="foreach: { data: cookieMessages, as: 'message' }">
+                </div>
+                <div class="messages" data-bind="foreach: { data: messages().messages, as: 'message' }">
+                </div>
+            </div>
+        </div>
+        <div class="columns">
+            <div class="column main">
+                <div class="leftProfileColumn col-md-4">
+                    <img src="{{ asset('images/avatar.jpg') }}" width="200px"/>
+
+                </div>
+                <div class="rightProfileColumn col-md-3">
+                    <h3>{{ grower.firstName }} {{ grower.lastName }}</h3>
+
+                    <p>Products:</p>
+
+                    <p>12 on Direct Market</p>
+
+                    <p>13 in Auction</p>
+                    {{ form_start(form) }}
+
+                    <input type="hidden" name="productId" value="{{ grower.id }}"/>
+
+                    <div class="box-tocart">
+                        <div class="fieldset">
+                            <div class="actions">
+                                <button id="product-addtocart-button" class="action primary tocart"
+                                        title="Add Grower" type="submit">
+                                    <span>Add Grower</span></button>
+                            </div>
+                        </div>
+                    </div>
+                    {{ form_end(form) }}
+                </div>
+            </div>
+            {% include(':grower:sidebar.htm.twig') %}
+        </div>
+
+    </main>
+
+{% endblock %}
+

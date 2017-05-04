@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %} Agents {% endblock %}
+{% block title %} Growers {% endblock %}
 {% block pageclass %}
 <body data-container="body"
       class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
@@ -23,7 +23,11 @@
     </div>
 </div>
 <main id="maincontent" class="page-main"><a id="contentarea" tabindex="-1"></a>
-
+    {% for msg in app.session.flashBag.get('success') %}
+        <div class="alert alert-success">
+            {{ msg }}
+        </div>
+    {% endfor %}
     <div class="page-title-wrapper">
 
     </div>
@@ -81,7 +85,8 @@
 
                 <span class="price-excluding-tax" data-label="Excl. Tax">
                         <span class="cart-price">
-                            <a class="action primary tocart" href="#" title="Edit item parameters"><span>Request</span></a>
+                            <a class="action primary tocart" href="{{ path('view_grower', {'id': grower.id}) }}"
+                               title="Edit item parameters"><span>View Profile</span></a>
                         </span>
 
                 </span>

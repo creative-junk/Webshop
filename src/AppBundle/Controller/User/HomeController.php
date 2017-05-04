@@ -13,7 +13,10 @@ namespace AppBundle\Controller\User;
 use AppBundle\Entity\Auction;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\CartItems;
+use AppBundle\Entity\GrowersList;
 use AppBundle\Entity\Product;
+use AppBundle\Entity\User;
+use AppBundle\Form\AddGrowerForm;
 use AppBundle\Form\addToCartFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -290,6 +293,43 @@ class HomeController extends Controller
     }
 
     /**
+     * @Route("/growers/{id}/view",name="view_growers")
+     */
+    public function addGrowerAction(Request $request, User $grower)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $growersList = new GrowersList();
+        $growersList->setWhoseList($user);
+        $growersList->setStatus("Requested");
+        $growersList->setGrower($grower);
+
+        $form = $this->createForm(addGrowerForm::class, $growersList);
+
+        //only handles data on POST
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid() && ($this->listNotExists($user, $grower))) {
+            $growersList = $form->getData();
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($growersList);
+            $em->flush();
+
+            $this->addFlash('success', 'Grower Successfully Requested!');
+            return $this->redirectToRoute('buyer_growers');
+        } else {
+            $this->addFlash('success', 'Grower Already Requested!');
+
+        }
+        return $this->render('home/growers/grower-details.htm.twig', [
+            'grower' => $grower,
+            'form' => $form->createView()
+
+        ]);
+
+    }
+    /**
      * @Route("/agents",name="buyer_agents")
      */
     public function buyerAgentsAction(Request $request = null)
@@ -353,7 +393,6 @@ class HomeController extends Controller
      */
     public function myOrdersListAction()
     {
-
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $em = $this->getDoctrine()->getManager();
         $orders = $em->getRepository('AppBundle:UserOrder')
@@ -362,5 +401,13 @@ class HomeController extends Controller
             'orders' => $orders,
         ]);
 
+    }
+
+    private function listNotExists(User $buyer, User $grower)
+    {
+        $em = $this->getDoctrine()->getManager();
+        $growersList = $em->getRepository('AppBundle:GrowersList')
+            ->findthisList($buyer, $grower);
+        return empty($growersList);
     }
 }

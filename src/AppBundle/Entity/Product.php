@@ -83,6 +83,30 @@ class Product
      */
     private $price;
     /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $vaselife;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $stemLength;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $headsize;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $quality;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $color;
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $season;
+    /**
      * @Assert\NotBlank()
      * @ORM\Column(type="boolean",options={"default"=true})
      */
@@ -443,6 +467,102 @@ class Product
         $this->imageSize = $imageSize;
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getVaselife()
+    {
+        return $this->vaselife;
+    }
+
+    /**
+     * @param mixed $vaselife
+     */
+    public function setVaselife($vaselife)
+    {
+        $this->vaselife = $vaselife;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStemLength()
+    {
+        return $this->stemLength;
+    }
+
+    /**
+     * @param mixed $stemLength
+     */
+    public function setStemLength($stemLength)
+    {
+        $this->stemLength = $stemLength;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getHeadsize()
+    {
+        return $this->headsize;
+    }
+
+    /**
+     * @param mixed $headsize
+     */
+    public function setHeadsize($headsize)
+    {
+        $this->headsize = $headsize;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getQuality()
+    {
+        return $this->quality;
+    }
+
+    /**
+     * @param mixed $quality
+     */
+    public function setQuality($quality)
+    {
+        $this->quality = $quality;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
+
+    /**
+     * @param mixed $color
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getSeason()
+    {
+        return $this->season;
+    }
+
+    /**
+     * @param mixed $season
+     */
+    public function setSeason($season)
+    {
+        $this->season = $season;
     }
 
 }
