@@ -1,16 +1,17 @@
 <?php
 /*********************************************************************************
- * Karbon Framework is a PHP5 Framework developed by Maxx Ng'ang'a
- * (C) 2016 Crysoft Dynamics Ltd
- * Karbon V 1.0
- * Maxx
- * 5/4/2017
+ * Developed by Maxx Ng'ang'a
+ * (C) 2017 Crysoft Dynamics Ltd
+ * Karbon V 2.1
+ * User: Maxx
+ * Date: 5/9/2017
+ * Time: 4:58 PM
  ********************************************************************************/
 
 namespace AppBundle\Entity;
 
 
-class BuyersList
+class BuyerGrower
 {
 
 }
