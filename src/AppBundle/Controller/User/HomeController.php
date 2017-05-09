@@ -370,6 +370,13 @@ class HomeController extends Controller
     }
 
     /**
+     * @Route("/agents/roses/{id}",name="buyer_view_agent_roses")
+     */
+    public function agentAuctionRosesAction(){
+        return $this->render('home/agents/auction.html.twig');
+    }
+
+    /**
      * @Route("/growers/{id}/view",name="view_grower")
      */
     public function growerProfileActionAction()

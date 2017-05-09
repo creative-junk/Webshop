@@ -10,6 +10,7 @@
 namespace AppBundle\Entity;
 
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\Security\Core\User\UserInterface;
 
@@ -79,6 +80,21 @@ class User implements UserInterface
      * @ORM\Column(type="datetime",nullable=true)
      */
     private $lastLoginTime;
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerAgent",mappedBy="buyer",fetch="EXTRA_LAZY")
+     */
+    private $buyerAgents;
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerAgent",mappedBy="agent",fetch="EXTRA_LAZY")
+     */
+    private $agentBuyers;
+
+
+    public function __construct()
+    {
+        $buyerAgents = new ArrayCollection();
+        $agentBuyer = new ArrayCollection();
+    }
 
     /**
      * @return mixed
@@ -310,5 +326,40 @@ class User implements UserInterface
         return $this->getFirstName() . ' ' . $this->getLastName();
     }
 
+    public function getFullName(){
+        return trim($this->getFirstName() . ' ' . $this->getLastName());
+    }
+
+    /**
+     * @return ArrayCollection|BuyerAgent[]
+     */
+    public function getBuyerAgents()
+    {
+        return $this->buyerAgents;
+    }
+
+    /**
+     * @param mixed $buyerAgents
+     */
+    public function setBuyerAgents($buyerAgents)
+    {
+        $this->buyerAgents = $buyerAgents;
+    }
+
+    /**
+     * @return ArrayCollection|BuyerAgent[]
+     */
+    public function getAgentBuyers()
+    {
+        return $this->agentBuyers;
+    }
+
+    /**
+     * @param mixed $agentBuyers
+     */
+    public function setAgentBuyers($agentBuyers)
+    {
+        $this->agentBuyers = $agentBuyers;
+    }
 
 }
