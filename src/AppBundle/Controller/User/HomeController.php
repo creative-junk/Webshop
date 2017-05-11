@@ -267,9 +267,29 @@ class HomeController extends Controller
      */
     public function buyerGrowersAction(Request $request = null)
     {
+        $grower = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $buyerGrowers = $em->getRepository('AppBundle:BuyerGrower')
+            ->findBy([
+                'listOwner' => $grower
+            ]);
+        $growerIds = array();
+
+        if ($buyerGrowers) {
+
+            foreach ($buyerGrowers as $buyerGrower) {
+                $growerIds[] = $buyerGrower->getGrower();
+            }
+        }else{
+            $growerIds[] = 1;
+        }
+
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:growers)')
+            ->setParameter('growers',$growerIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')
@@ -334,9 +354,28 @@ class HomeController extends Controller
      */
     public function buyerAgentsAction(Request $request = null)
     {
+        $buyer = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $buyerAgents = $em->getRepository('AppBundle:BuyerAgent')
+            ->findBy([
+                'listOwner' => $buyer
+            ]);
+        $agentIds = array();
+
+        if ($buyerAgents) {
+
+            foreach ($buyerAgents as $buyerAgent) {
+                $agentIds[] = $buyerAgent->getAgent();
+            }
+        }else{
+            $agentIds[] = 1;
+        }
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:agents)')
+            ->setParameter('agents',$agentIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')
@@ -358,6 +397,7 @@ class HomeController extends Controller
         ]);
 
     }
+
 
     /**
      * @Route("/agents/{id}/view",name="view_agent")
@@ -410,11 +450,20 @@ class HomeController extends Controller
 
     }
 
-    private function listNotExists(User $buyer, User $grower)
-    {
+
+    public function buyerAgentExists(User $buyer, User $agent,User $whoseList){
         $em = $this->getDoctrine()->getManager();
-        $growersList = $em->getRepository('AppBundle:GrowersList')
-            ->findthisList($buyer, $grower);
-        return empty($growersList);
+
+        $buyerAgent = $em->getRepository('AppBundle:BuyerAgent')
+            ->findOneBy([
+                'buyer'=>$buyer,
+                'agent'=>$agent,
+                'listOwner'=> $whoseList
+            ]);
+        if ($buyerAgent){
+            return true;
+        }else{
+            return false;
+        }
     }
 }

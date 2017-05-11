@@ -10,7 +10,9 @@
 namespace AppBundle\Controller\Grower;
 
 use AppBundle\Entity\CartItems;
+use AppBundle\Entity\ShippingAddress;
 use AppBundle\Entity\User;
+use AppBundle\Entity\GrowerBreeder;
 use AppBundle\Entity\Auction;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\Product;
@@ -19,6 +21,8 @@ use AppBundle\Form\addToCartFormType;
 use AppBundle\Form\AuctionProductForm;
 use AppBundle\Form\LoginForm;
 use AppBundle\Form\ProductFormType;
+use AppBundle\Form\ShippingAddressFormType;
+use AppBundle\Form\ShippingMethodFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -520,9 +524,31 @@ class GrowerController extends Controller
     /**
      * @Route("/breeders/my",name="my_breeder_list")
      */
-    public function myBreederListAction()
+    public function myBreederListAction(Request $request)
     {
+        $grower = $this->get('security.token_storage')->getToken()->getUser();
 
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerBreeder')
+            ->createQueryBuilder('gb')
+            ->andWhere('gb.status = :isAccepted')
+            ->setParameter('isAccepted', 'Accepted')
+            ->andWhere('gb.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $grower);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+        return $this->render('grower/breeders/mylist.html.twig', [
+            'growerBreeders' => $result,
+        ]);
     }
 
     /**
@@ -538,9 +564,30 @@ class GrowerController extends Controller
      */
     public function agentListAction(Request $request)
     {
+        $grower = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $growerAgents = $em->getRepository('AppBundle:GrowerAgent')
+            ->findBy([
+                'listOwner' => $grower
+            ]);
+        $agentIds = array();
+
+        if ($growerAgents) {
+
+            foreach ($growerAgents as $growerAgent) {
+                $agentIds[] = $growerAgent->getAgent();
+            }
+        }else{
+            $agentIds[] = 1;
+        }
+
+
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:agents)')
+            ->setParameter('agents',$agentIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')
@@ -565,11 +612,40 @@ class GrowerController extends Controller
     /**
      * @Route("/agents/my",name="my_grower_agent_list")
      */
-    public function myAgentListAction()
+    public function myAgentListAction(Request $request)
     {
+        $grower = $this->get('security.token_storage')->getToken()->getUser();
 
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('gb')
+            ->andWhere('gb.status = :isAccepted')
+            ->setParameter('isAccepted', 'Accepted')
+            ->andWhere('gb.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $grower);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+        return $this->render('grower/agents/mylist.html.twig', [
+            'growerAgents' => $result,
+        ]);
     }
 
+    /**
+     * @Route("/agents/{id}/view",name="agent_profile")
+     */
+    public function agentProfileAction()
+    {
+        return $this->render('breeder/grower-profile.htm.twig');
+    }
     /**
      * @Route("/buyers",name="grower_buyer_list")
      */
@@ -595,7 +671,7 @@ class GrowerController extends Controller
         );
 
         return $this->render('grower/buyers/list.html.twig', [
-            'agents' => $result,
+            'buyers' => $result,
         ]);
     }
 
@@ -763,11 +839,227 @@ class GrowerController extends Controller
         } else {
             $cartItems = "";
         }
-        return $this->render(':partials/iflora:macrocart.htm.twig', [
+        return $this->render('cart.htm.twig', [
             'cartItems' => $cartItems,
             'cart' => $cart[0]
         ]);
     }
+
+    /**
+     * @Route("/requests/breeders",name="breeder_requests")
+     */
+    public function getBreederRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerBreeder')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('grower/breeders/requests.html.twig', [
+            'breederRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/requests/agents",name="grower_agent_requests")
+     */
+    public function getAgentRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('grower/agents/requests.html.twig', [
+            'agentRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/requests/my/breeders",name="my_breeder_requests")
+     */
+    public function getMyBreederRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerBreeder')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.grower = :whoIsGrower')
+            ->setParameter('whoIsGrower', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('grower/breeders/requests.html.twig', [
+            'breederRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/requests/my/agents",name="my_grower_agent_requests")
+     */
+    public function getMyAgentRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.grower = :whoIsGrower')
+            ->setParameter('whoIsGrower', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('grower/agents/requests.html.twig', [
+            'agentRequests' => $result,
+        ]);
+    }
+    public function getTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:GrowerBreeder')
+            ->getNrBreederRequests($user);
+
+        $nrAgentRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrAgentRequests($user);
+        $totalRequests += $nrBreederRequests;
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getTotalBreederRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:GrowerBreeder')
+            ->getNrBreederRequests($user);
+
+        $totalRequests += $nrBreederRequests;
+
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getTotalAgentRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrAgentRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:GrowerBreeder')
+            ->getNrMyBreederRequests($user);
+
+        $nrAgentRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrMyAgentRequests($user);
+        $totalRequests += $nrBreederRequests;
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalBreederRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:GrowerBreeder')
+            ->getNrMyBreederRequests($user);
+
+        $totalRequests += $nrBreederRequests;
+
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalAgentRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrMyAgentRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+
 
 
 }

@@ -134,9 +134,29 @@ class BreederController extends Controller
      */
     public function buyerGrowersAction(Request $request = null)
     {
+        $breeder = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $breederGrowers = $em->getRepository('AppBundle:GrowerBreeder')
+            ->findBy([
+                'listOwner' => $breeder
+            ]);
+        $growerIds = array();
+
+        if ($breederGrowers) {
+
+            foreach ($breederGrowers as $breederGrower) {
+                $growerIds[] = $breederGrower->getGrower();
+            }
+        }else{
+            $growerIds[] = 1;
+        }
+
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:growers)')
+            ->setParameter('growers',$growerIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')

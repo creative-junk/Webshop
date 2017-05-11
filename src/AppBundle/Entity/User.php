@@ -88,6 +88,32 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="BuyerAgent",mappedBy="agent",fetch="EXTRA_LAZY")
      */
     private $agentBuyers;
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="buyer",fetch="EXTRA_LAZY")
+     */
+    private $buyerGrowers;
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="grower",fetch="EXTRA_LAZY")
+     */
+    private $growerBuyers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="grower",fetch="EXTRA_LAZY")
+     */
+    private $growerAgents;
+    /**
+     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="agent",fetch="EXTRA_LAZY")
+     */
+    private $agentGrowers;
+
+    /**
+     * @ORM\OneToMany(targetEntity="GrowerBreeder",mappedBy="grower",fetch="EXTRA_LAZY")
+     */
+    private $growerBreeders;
+    /**
+     * @ORM\OneToMany(targetEntity="GrowerBreeder",mappedBy="breeder",fetch="EXTRA_LAZY")
+     */
+    private $breederGrowers;
 
 
     public function __construct()
@@ -360,6 +386,102 @@ class User implements UserInterface
     public function setAgentBuyers($agentBuyers)
     {
         $this->agentBuyers = $agentBuyers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBuyerGrowers()
+    {
+        return $this->buyerGrowers;
+    }
+
+    /**
+     * @param mixed $buyerGrowers
+     */
+    public function setBuyerGrowers($buyerGrowers)
+    {
+        $this->buyerGrowers = $buyerGrowers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGrowerBuyers()
+    {
+        return $this->growerBuyers;
+    }
+
+    /**
+     * @param mixed $growerBuyers
+     */
+    public function setGrowerBuyers($growerBuyers)
+    {
+        $this->growerBuyers = $growerBuyers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGrowerAgents()
+    {
+        return $this->growerAgents;
+    }
+
+    /**
+     * @param mixed $growerAgents
+     */
+    public function setGrowerAgents($growerAgents)
+    {
+        $this->growerAgents = $growerAgents;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getAgentGrowers()
+    {
+        return $this->agentGrowers;
+    }
+
+    /**
+     * @param mixed $agentGrowers
+     */
+    public function setAgentGrowers($agentGrowers)
+    {
+        $this->agentGrowers = $agentGrowers;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getGrowerBreeders()
+    {
+        return $this->growerBreeders;
+    }
+
+    /**
+     * @param mixed $growerBreeders
+     */
+    public function setGrowerBreeders($growerBreeders)
+    {
+        $this->growerBreeders = $growerBreeders;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getBreederGrowers()
+    {
+        return $this->breederGrowers;
+    }
+
+    /**
+     * @param mixed $breederGrowers
+     */
+    public function setBreederGrowers($breederGrowers)
+    {
+        $this->breederGrowers = $breederGrowers;
     }
 
 }

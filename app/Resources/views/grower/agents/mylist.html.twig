@@ -6,7 +6,7 @@
             $('.js-request-user').on('click',function (e) {
                 e.preventDefault();
 
-                var $el = $(this).closest('.js-grower-item');
+                var $el = $(this).closest('.js-agent-item');
 
                 $(this).find('.fa-exchange')
                     .removeClass('fa-exchange')
@@ -23,6 +23,7 @@
     </script>
 {% endblock %}
 
+
 {% block pageclass %}
 <body data-container="body"
       class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
@@ -31,16 +32,19 @@
 <div class="category-view">
     <div class="page-title-wrapper">
         <h1 class="page-title" id="page-title-heading" aria-labelledby="page-title-heading toolbar-amount">
-            <span class="base" data-ui-id="page-title-wrapper">Growers</span></h1>
+            <span class="base" data-ui-id="page-title-wrapper">My Agents</span></h1>
     </div>
     <div class="breadcrumbs">
         <ul class="items">
             <li class="item home">
-                <a href="{{ path('breeder_dashboard') }}" title="Go to Home Page">
+                <a href="{{ path('grower_dashboard') }}" title="Go to Home Page">
                     Home </a>
             </li>
             <li class="item category131">
-                <strong>Growers</strong>
+                <a href="{{ path('grower_agent_list') }}" title="Go to Agents">Agents</a>
+            </li>
+            <li class="item category131">
+                <strong>My Agents</strong>
             </li>
         </ul>
     </div>
@@ -64,24 +68,24 @@
                 <table id="shopping-cart-table" class="cart items data table">
                     <thead>
                     <tr>
-                        <th class="col item" scope="col"><span>Grower</span></th>
-                        <th class="col price" scope="col"><span>Products</span></th>
-                        <th class="col subtotal" scope="col"><span>Connect</span></th>
+                        <th class="col item" scope="col"><span>Agent</span></th>
+                        <th class="col price" scope="col"><span>Roses</span></th>
+
                     </tr>
                     </thead>
                     <tbody class="cart item">
-                    {% for grower in growers %}
-                        <tr class="item-info js-grower-item">
+                    {% for growerAgent in growerAgents %}
+                        <tr class="item-info js-agent-item">
                             <td data-th="Item" class="col item">
 
                     <span class="product-image-container" style="width:165px;">
                     <strong class="product-item-name">
 
                         <span class="product-image-wrapper" style="padding-bottom: 100%;">
-                          <a href="{{ path('grower_profile',{
-                              'id':grower.id
-                          }) }}">{{ grower.fullName }}</a>
-                           <!-- <img class="product-image-photo" src="" width="165" height="165" alt="Orion Two-Tone Fitted"> --></span>
+                          <a href="{{ path('agent_profile',{
+                              'id':growerAgent.agent.id
+                          }) }}">{{ growerAgent.agent.fullName }}</a>
+   </span>
                     </strong>
 
                     </span>
@@ -97,24 +101,12 @@
                 </span>
                             </td>
 
-                            <td class="col subtotal" data-th="Subtotal">
-<span class="price-excluding-tax" data-label="Excl. Tax">
-                        <span class="cart-price">
-                            <a
-                                    href="#"
-                                    class="action request js-request-user"
-                                    data-url="{{ path('request-grower-breeder',{
-                                        'id': grower.id
-                                    }) }}"
-                                    title="Request Grower">
-                                <span class="fa fa-exchange"></span>  Request
 
-                            </a>
-                        </span>
-
-                </span>
-                            </td>
                         </tr>
+                     {% else %}
+                         <tr class="item-info js-breeder-item">
+                             <td data-th="Item" class="col item">You currently have no Agents.</td>
+                         </tr>
                     {% endfor %}
                     </tbody>
                 </table>
@@ -122,7 +114,7 @@
 
             </div>
         </div>
-        {% include('breeder/sidebar.htm.twig') %}
+        {% include(':grower:sidebar.htm.twig') %}
 
     </div>
 </main>

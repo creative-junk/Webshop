@@ -1,12 +1,12 @@
 {% extends 'base.html.twig' %}
-{% block title %} Agents {% endblock %}
+{% block title %} Buyers {% endblock %}
 {% block javascripts %}
     <script type="text/javascript">
         jQuery(document).ready(function () {
             $('.js-request-user').on('click',function (e) {
                 e.preventDefault();
 
-                var $el = $(this).closest('.js-grower-item');
+                var $el = $(this).closest('.js-buyer-item');
 
                 $(this).find('.fa-exchange')
                     .removeClass('fa-exchange')
@@ -22,7 +22,6 @@
         })
     </script>
 {% endblock %}
-
 {% block pageclass %}
 <body data-container="body"
       class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
@@ -31,16 +30,16 @@
 <div class="category-view">
     <div class="page-title-wrapper">
         <h1 class="page-title" id="page-title-heading" aria-labelledby="page-title-heading toolbar-amount">
-            <span class="base" data-ui-id="page-title-wrapper">Growers</span></h1>
+            <span class="base" data-ui-id="page-title-wrapper">Buyers</span></h1>
     </div>
     <div class="breadcrumbs">
         <ul class="items">
             <li class="item home">
-                <a href="{{ path('breeder_dashboard') }}" title="Go to Home Page">
+                <a href="{{ path('agent_dashboard') }}" title="Go to Home Page">
                     Home </a>
             </li>
             <li class="item category131">
-                <strong>Growers</strong>
+                <strong>Buyers</strong>
             </li>
         </ul>
     </div>
@@ -64,37 +63,26 @@
                 <table id="shopping-cart-table" class="cart items data table">
                     <thead>
                     <tr>
-                        <th class="col item" scope="col"><span>Grower</span></th>
-                        <th class="col price" scope="col"><span>Products</span></th>
+                        <th class="col item" scope="col"><span>Buyer</span></th>
                         <th class="col subtotal" scope="col"><span>Connect</span></th>
                     </tr>
                     </thead>
                     <tbody class="cart item">
-                    {% for grower in growers %}
-                        <tr class="item-info js-grower-item">
+                    {% for buyer in buyers %}
+                        <tr class="item-info js-buyer-item">
                             <td data-th="Item" class="col item">
 
                     <span class="product-image-container" style="width:165px;">
                     <strong class="product-item-name">
 
                         <span class="product-image-wrapper" style="padding-bottom: 100%;">
-                          <a href="{{ path('grower_profile',{
-                              'id':grower.id
-                          }) }}">{{ grower.fullName }}</a>
-                           <!-- <img class="product-image-photo" src="" width="165" height="165" alt="Orion Two-Tone Fitted"> --></span>
+                          <a href="{{ path('agent_buyer_profile',{
+                              'id':buyer.id
+                          }) }}">{{ buyer.fullName }}</a>
+   </span>
                     </strong>
 
                     </span>
-                            </td>
-
-                            <td class="col price" data-th="Price">
-
-                <span class="price-excluding-tax" data-label="Excl. Tax">
-                        <span class="cart-price">
-                            <span class="price"><a class="action action-edit" href="#"
-                                                   title="View Roses">View Roses</a></span>            </span>
-
-                </span>
                             </td>
 
                             <td class="col subtotal" data-th="Subtotal">
@@ -103,10 +91,10 @@
                             <a
                                     href="#"
                                     class="action request js-request-user"
-                                    data-url="{{ path('request-grower-breeder',{
-                                        'id': grower.id
+                                    data-url="{{ path('request-buyer-grower',{
+                                        'id': buyer.id
                                     }) }}"
-                                    title="Request Grower">
+                                    title="Request Agent">
                                 <span class="fa fa-exchange"></span>  Request
 
                             </a>
@@ -122,7 +110,7 @@
 
             </div>
         </div>
-        {% include('breeder/sidebar.htm.twig') %}
+        {% include(':grower:sidebar.htm.twig') %}
 
     </div>
 </main>

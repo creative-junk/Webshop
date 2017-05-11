@@ -3038,12 +3038,12 @@ a.action.primary:hover, a.action.primary:active, a.action.primary:focus {
 }
 
 .breadcrumbs a {
-    color: #333;
+    color: #fff;
     text-decoration: none;
 }
 
 .breadcrumbs a:visited {
-    color: #333;
+    color: #fff;
     text-decoration: none;
 }
 

@@ -260,9 +260,28 @@ class AgentController extends Controller
      */
     public function agentGrowersAction(Request $request = null)
     {
+        $agent = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $agentGrowers = $em->getRepository('AppBundle:GrowerAgent')
+            ->findBy([
+                'listOwner' => $agent
+            ]);
+        $growerIds = array();
+
+        if ($agentGrowers) {
+
+            foreach ($agentGrowers as $agentGrower) {
+                $growerIds[] = $agentGrower->getGrower();
+            }
+        }else{
+            $growerIds[] = 1;
+        }
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:growers)')
+            ->setParameter('growers',$growerIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')
@@ -280,7 +299,7 @@ class AgentController extends Controller
         );
 
         return $this->render('agent/growers/list.html.twig', [
-            'agents' => $result,
+            'growers' => $result,
         ]);
 
     }
@@ -298,9 +317,29 @@ class AgentController extends Controller
      */
     public function buyerListAction(Request $request = null)
     {
+        $agent = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
+
+        $agentBuyers = $em->getRepository('AppBundle:BuyerAgent')
+            ->findBy([
+                'listOwner' => $agent
+            ]);
+        $buyerIds = array();
+
+        if ($agentBuyers) {
+
+            foreach ($agentBuyers as $agentBuyer) {
+                $buyerIds[] = $agentBuyer->getBuyer();
+            }
+        }else{
+            $buyerIds[] = 1;
+        }
+
         $queryBuilder = $em->getRepository('AppBundle:User')
             ->createQueryBuilder('user')
+            ->andWhere('user.id NOT IN (:buyers)')
+            ->setParameter('buyers',$buyerIds)
             ->andWhere('user.isActive = :isActive')
             ->setParameter('isActive', true)
             ->andWhere('user.userType = :userType')
@@ -318,7 +357,7 @@ class AgentController extends Controller
         );
 
         return $this->render('agent/buyers/list.html.twig', [
-            'agents' => $result,
+            'buyers' => $result,
         ]);
     }
 

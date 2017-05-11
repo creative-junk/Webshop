@@ -36,6 +36,12 @@ class BuyerAgent
      */
     private $agent;
     /**
+     * @ORM\ManyToOne(targetEntity="User")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $listOwner;
+
+    /**
      * @ORM\Column(type="string")
      */
     private $status;
@@ -134,6 +140,22 @@ class BuyerAgent
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getListOwner()
+    {
+        return $this->listOwner;
+    }
+
+    /**
+     * @param mixed $listOwner
+     */
+    public function setListOwner($listOwner)
+    {
+        $this->listOwner = $listOwner;
     }
 
 }

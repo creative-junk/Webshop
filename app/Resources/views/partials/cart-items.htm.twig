@@ -2,17 +2,16 @@
     <div class="cart-item row">
         <div class="col-sm-2 col-lg-1">
             <div class="image">
-                <img width="60" height="60" alt="" src="images/products/{{ item.product.imageUrl }}"/>
+                <img width="60" height="60" alt="" src="{{ asset('images/products/') }}{{ item.product.imageName }}"/>
             </div>
         </div>
         <div class="col-sm-4 col-lg-6">
 
             <div class="title">
-                <a href="/shop/{{ item.product.id }}/view">{{ item.product.title }}</a>
-                <ul class="options">
+                <a href="{{ path('seedling_details',{
+                    'id': item.product.id
+                }) }}">{{ item.product.title }}</a>
 
-                    <li>{{ item.product.description }}</li>
-                </ul>
             </div>
         </div>
         <div class="col-sm-6 col-lg-5 details">

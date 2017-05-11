@@ -1,5 +1,27 @@
 {% extends 'base.html.twig' %}
 {% block title %} Growers {% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $('.js-request-user').on('click',function (e) {
+                e.preventDefault();
+
+                var $el = $(this).closest('.js-grower-item');
+
+                $(this).find('.fa-exchange')
+                    .removeClass('fa-exchange')
+                    .addClass('fa-spinner')
+                    .addClass('fa-spin');
+                $.ajax({
+                    url: $(this).data('url'),
+                    method: 'GET'
+                }).done(function () {
+                    $el.fadeOut("slow");
+                });
+            });
+        })
+    </script>
+{% endblock %}
 {% block pageclass %}
 <body data-container="body"
       class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
@@ -47,24 +69,21 @@
                     </tr>
                     </thead>
                     <tbody class="cart item">
-                    {% for agent in agents %}
-                        <tr class="item-info">
+                    {% for grower in growers %}
+                        <tr class="item-info js-grower-item">
                             <td data-th="Item" class="col item">
 
                     <span class="product-image-container" style="width:165px;">
                     <strong class="product-item-name">
 
                         <span class="product-image-wrapper" style="padding-bottom: 100%;">
-                          <a href="growers/{{ agent.id }}/view">{{ agent.firstName }} {{ agent.lastName }}</a>
-                           <!-- <img class="product-image-photo" src="" width="165" height="165" alt="Orion Two-Tone Fitted"> --></span>
+                          <a href="{{ path('agent_grower_profile',{
+                              'id': grower.id
+                          }) }}">{{ grower.fullName }}</a></span>
                     </strong>
 
                     </span>
 
-                                <div class="product-item-details">
-
-                                    <a href="growers/{{ agent.id }}/view">View Profile</a>
-                                </div>
                             </td>
 
                             <td class="col price" data-th="Price">
@@ -72,19 +91,28 @@
                 <span class="price-excluding-tax" data-label="Excl. Tax">
                         <span class="cart-price">
                             <span class="price"><a class="action action-edit" href="#"
-                                                   title="Edit item parameters">150</a></span>            </span>
+                                                   title="Edit item parameters">View Roses</a></span>            </span>
 
                 </span>
                             </td>
 
                             <td class="col subtotal" data-th="Subtotal">
-
-                <span class="price-excluding-tax" data-label="Excl. Tax">
+<span class="price-excluding-tax" data-label="Excl. Tax">
                         <span class="cart-price">
-                            <a class="action primary tocart" href="#" title="Edit item parameters"><span>Request</span></a>
+                            <a
+                                    href="#"
+                                    class="action request js-request-user"
+                                    data-url="{{ path('request-grower-agent',{
+                                        'id': grower.id
+                                    }) }}"
+                                    title="Request Grower">
+                                <span class="fa fa-exchange"></span>  Request
+
+                            </a>
                         </span>
 
                 </span>
+
                             </td>
                         </tr>
                     {% endfor %}

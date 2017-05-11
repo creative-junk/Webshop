@@ -4,8 +4,8 @@
  * (C) 2017 Crysoft Dynamics Ltd
  * Karbon V 2.1
  * User: Maxx
- * Date: 5/9/2017
- * Time: 4:58 PM
+ * Date: 5/10/2017
+ * Time: 5:37 PM
  ********************************************************************************/
 
 namespace AppBundle\Entity;
@@ -14,10 +14,10 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity
- * @ORM\Table(name="buyer_grower")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\GrowerBreederRepository")
+ * @ORM\Table(name="grower_breeder")
  */
-class BuyerGrower
+class GrowerBreeder
 {
     /**
      * @ORM\Id
@@ -26,15 +26,15 @@ class BuyerGrower
      */
     private $id;
     /**
-     * @ORM\ManyToOne(targetEntity="User",inversedBy="buyerGrowers")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $buyer;
-    /**
-     * @ORM\ManyToOne(targetEntity="User",inversedBy="growerBuyers")
+     * @ORM\ManyToOne(targetEntity="User",inversedBy="growerBreeders")
      * @ORM\JoinColumn(nullable=false)
      */
     private $grower;
+    /**
+     * @ORM\ManyToOne(targetEntity="User",inversedBy="breederGrowers")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $breeder;
     /**
      * @ORM\ManyToOne(targetEntity="User")
      * @ORM\JoinColumn(nullable=false)
@@ -63,23 +63,7 @@ class BuyerGrower
     }
 
     /**
-     * @return User
-     */
-    public function getBuyer()
-    {
-        return $this->buyer;
-    }
-
-    /**
-     * @param User $buyer
-     */
-    public function setBuyer(User $buyer)
-    {
-        $this->buyer = $buyer;
-    }
-
-    /**
-     * @return User
+     * @return mixed
      */
     public function getGrower()
     {
@@ -87,15 +71,31 @@ class BuyerGrower
     }
 
     /**
-     * @param User $grower
+     * @param mixed $grower
      */
-    public function setGrower(User $grower)
+    public function setGrower($grower)
     {
         $this->grower = $grower;
     }
 
     /**
-     * @return User
+     * @return mixed
+     */
+    public function getBreeder()
+    {
+        return $this->breeder;
+    }
+
+    /**
+     * @param mixed $breeder
+     */
+    public function setBreeder($breeder)
+    {
+        $this->breeder = $breeder;
+    }
+
+    /**
+     * @return mixed
      */
     public function getListOwner()
     {
@@ -103,9 +103,9 @@ class BuyerGrower
     }
 
     /**
-     * @param User $listOwner
+     * @param mixed $listOwner
      */
-    public function setListOwner(User $listOwner)
+    public function setListOwner($listOwner)
     {
         $this->listOwner = $listOwner;
     }
@@ -157,6 +157,7 @@ class BuyerGrower
     {
         $this->updatedAt = $updatedAt;
     }
+
 
 
 }

@@ -1,5 +1,32 @@
 {% extends 'base.html.twig' %}
 {% block title %} Agents {% endblock %}
+{% block javascripts %}
+    <script type="text/javascript" src="{{ asset('iflora/js/jquery.js') }}"></script>
+    <script type="text/javascript">
+        jQuery(document).ready(function () {
+            $('.js-request-user').on('click',function (e) {
+                e.preventDefault();
+
+                var $el = $(this).closest('.js-agent-item');
+
+                $(this).find('.fa-exchange')
+                    .removeClass('fa-exchange')
+                    .addClass('fa-spinner')
+                    .addClass('fa-spin');
+                $.ajax({
+                    url: $(this).data('url'),
+                    method: 'GET'
+                }).done(function () {
+                    $el.fadeOut("slow");
+                }).error(function () {
+                    $(this).find('.fa-spinner')
+                        .removeClass('fa-spinner')
+                        .addClass('fa-exchange')
+                });
+            });
+        })
+    </script>
+{% endblock %}
 {% block pageclass %}
 <body data-container="body"
       class="page-with-filter page-products categorypath-short-sleeve category-short-sleeve catalog-category-view page-layout-2columns-left">
@@ -76,7 +103,16 @@
 
                 <span class="price-excluding-tax" data-label="Excl. Tax">
                         <span class="cart-price">
-                            <a class="action primary tocart" href="#" title="Request Agent"><span>Request</span></a>
+                            <a
+                                    href="#"
+                                    class="action request js-request-user"
+                                    data-url="{{ path('request-agent-buyer',{
+                                        'id': agent.id
+                                    }) }}"
+                                     title="Request Agent">
+                                <span class="fa fa-exchange"></span>  Request
+
+                            </a>
                         </span>
 
                 </span>

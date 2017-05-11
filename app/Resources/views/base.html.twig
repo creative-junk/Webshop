@@ -22,7 +22,10 @@
         <link rel="stylesheet" type="text/css"
               href="https://cdnjs.cloudflare.com/ajax/libs/material-design-iconic-font/2.2.0/css/material-design-iconic-font.min.css">
     {% endblock %}
+    <script type="text/javascript" src="{{ asset('iflora/js/jquery.js') }}"></script>
     {% block javascripts %}
+
+
         <script type="text/javascript" src="{{ asset('iflora/js/require.js') }}"></script>
         <script type="text/javascript" src="{{ asset('iflora/js/mixins.js') }}"></script>
     {% endblock %}
@@ -49,136 +52,24 @@
                             <div class="switcher currency switcher-currency" id="switcher-currency">
                                 <strong class="label switcher-label"><span>Currency:</span></strong>
 
-                                <div class="actions dropdown options switcher-options">
-                                    <div class="action toggle switcher-trigger" id="switcher-currency-trigger">
-                                        <strong class="language-USD">
-                                            <span>KSH<i class="fa fa-angle-down">&nbsp;</i></span>
-                                        </strong>
-                                    </div>
-                                    <ul class="dropdown switcher-dropdown">
-                                        <li class="currency-EUR switcher-option">
-                                            <a href="#">USD</a>
-                                        </li>
-                                        <li class="currency-EUR switcher-option">
-                                            <a href="#">EUR</a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {% if app.user %}
+                                    Welcome to Iflora,  <span style="color:#e93838;font-weight: bold">{{ app.user.fullName }}</span>
+                                {% else %}
+                                    Welcome to Iflora
+                                {% endif %}
                             </div>
 
 
                         </div>
                         <div class="col-md-6">
                             {% if is_granted('ROLE_BUYER') %}
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>My Account<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="#">My Account</a></li>
-                                        <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                            <a href="{{ path('order_list') }}">My Orders
-                                                <!-- ko if: wishlist().counter --><!-- /ko -->
-                                            </a>
-                                        </li>
-                                        <!-- <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                            <a href="{{ path('my_compare') }}">My Wish List
-                                                <!-- ko if: wishlist().counter --><!-- /ko --
-                                            </a>
-                                        </li> -->
-
-                                        <li class="authorization-link" data-label="or">
-                                            <a href="{{ path('security_logout') }}">
-                                                Logout </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {% include(':nav/subNav:buyer.htm.twig') %}
                             {% elseif is_granted('ROLE_GROWER') %}
-
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>My Account<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="#">My Account</a></li>
-
-                                        <li class="authorization-link" data-label="or">
-                                            <a href="{{ path('security_logout') }}">
-                                                Logout </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>Product Management<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="{{ path('grower_product_new') }}">New Product</a></li>
-                                        <li><a href="{{ path('grower_auction_new') }}">Add to Auction</a></li>
-                                    </ul>
-                                </div>
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>Order Management<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-
-                                        <li><a href="{{ path('grower_order_list') }}">Received Orders</a></li>
-                                        <li><a href="{{ path('my_grower_order_list') }}">My Orders</a></li>
-                                    </ul>
-                                </div>
+                                {% include(':nav/subNav:grower.htm.twig')  %}
                             {% elseif is_granted('ROLE_BREEDER') %}
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>My Account<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="#">My Account</a></li>
-                                        <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                            <a href="{{ path('order_list') }}">Orders
-                                                <!-- ko if: wishlist().counter --><!-- /ko -->
-                                            </a>
-                                        </li>
-                                        <!-- <li class="link wishlist" data-bind="scope: 'wishlist'">
-                                            <a href="{{ path('my_compare') }}">My Wish List
-                                                <!-- ko if: wishlist().counter --><!-- /ko --
-                                            </a>
-                                        </li> -->
-
-                                        <li class="authorization-link" data-label="or">
-                                            <a href="{{ path('security_logout') }}">
-                                                Logout </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                {% include(':nav/subNav:breeder.htm.twig') %}
                             {% elseif is_granted('ROLE_AGENT') %}
-
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>My Account<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="#">My Account</a></li>
-
-                                        <li class="authorization-link" data-label="or">
-                                            <a href="{{ path('security_logout') }}">
-                                                Logout </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>Product Management<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-                                        <li><a href="{{ path('my_assigned_product_list') }}">Assigned Products</a></li>
-                                        <li><a href="{{ path('my_assigned_product_list') }}">Assignment Requests</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                                <div class="my-acount">
-                                    <strong class="label" style="color:black;"><span>Order Management<i
-                                                    class="fa fa-angle-down">&nbsp;</i></span></strong>
-                                    <ul class="header links">
-
-                                        <li><a href="{{ path('agent_order_list') }}">Received Orders</a></li>
-                                        <li><a href="{{ path('my_agent_order_list') }}">My Orders</a></li>
-                                    </ul>
-                                </div>
-
+                                {% include(':nav/subNav:agent.htm.twig') %}
                             {% endif %}
                         </div>
                     </div>
@@ -364,7 +255,17 @@
         </div>
         <script type="text/javascript">
 
-            require(["jquery"], function ($) {
+            jQuery(document).ready(function () {
+
+                $(window).scroll(function() {
+                    var scroll = $(window).scrollTop();
+
+                    if (scroll >= 50) {
+                        $(".header-fix").addClass("fix-header-fix");
+                    } else {
+                        $(".header-fix").removeClass("fix-header-fix");
+                    }
+                });
 
                 $(window).scroll(function () {
                     if ($(this).scrollTop() > 300) {

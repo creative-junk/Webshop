@@ -89,4 +89,5 @@ class UserRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
+
 }
