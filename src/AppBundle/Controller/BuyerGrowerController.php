@@ -73,4 +73,19 @@ class BuyerGrowerController extends Controller
             return false;
         }
     }
+    /**
+     * @Route("/buyer/request/grower/{id}/cancel",name="cancel-buyer-grower-request")
+     */
+
+    public function cancelGrowerBreederRequestAction(BuyerGrower $buyerGrower)
+    {
+        $buyerGrower->setStatus("Cancelled");
+        $buyerGrower->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($buyerGrower);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
 }

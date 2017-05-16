@@ -369,7 +369,6 @@ input[type=text], input[type=password], input[type=url], input[type=tel], input[
     background-clip: padding-box;
     border: 1px solid #c2c2c2;
     border-radius: 1px;
-    font-family: 'Open Sans', 'Open Sans';
     font-size: 14px;
     height: 32px;
     line-height: 1.42857143;

@@ -14,9 +14,32 @@ use Symfony\Component\HttpFoundation\Request;
 class CartController extends Controller
 {
     /**
-     * @Route("/cart",name="cart_list")
+     * @Route("/home/cart",name="buyer_cart_list")
      */
-    public function indexAction()
+    public function buyerIndexAction()
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em=$this->getDoctrine()->getManager();
+        $cart = $em->getRepository('AppBundle:Cart')
+            ->findMyCart($user);
+        if($cart) {
+            $cartItems = $em->getRepository('AppBundle:CartItems')
+                ->findAllItemsInMyCartOrderByDate($cart[0]);
+            $cart = $cart[0];
+        }else{
+            $cartItems="";
+            $cart = "";
+        }
+        return $this->render(':partials/iflora/user:macrocart.htm.twig', [
+            'cartItems'=>$cartItems,
+            'cart' => $cart
+        ]);
+    }
+    /**
+     * @Route("/grower/cart",name="grower_cart_list")
+     */
+    public function growerIndexAction()
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 

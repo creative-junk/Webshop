@@ -1,14 +1,62 @@
 {% extends 'base.html.twig' %}
 {% block title %}{{ product.title }}{% endblock %}
+{% block javascripts %}
+    <script type="text/javascript">
+        // prepare the form when the DOM is ready
+        $(document).ready(function() {
+
+            // bind to the form's submit event
+            $('#addToCart').submit(function(e) {
+                var ajaxRequest;
+                //Prevent Normal Submit
+                e.preventDefault();
+
+                $(".messages").fadeOut("slow");
+
+                $(this).find('.fa-shopping-cart')
+                    .removeClass('fa-shopping-cart')
+                    .addClass('fa-spinner')
+                    .addClass('fa-spin');
+
+                $(this).find('.fa-check')
+                    .removeClass('fa-check')
+                    .addClass('fa-spinner')
+                    .addClass('fa-spin');
+
+
+                // get form values
+                var values = $(this).serialize();
+
+                $.ajax({
+                    url: $(this).data('url'),
+                    data: values,
+                    method: 'POST'
+                }).done(function () {
+                    //$el.fadeOut("slow");
+                   $(".messages").fadeIn("slow");
+
+                   $("#add-t-cart")
+                       .removeClass('fa-spinner')
+                       .removeClass('fa-spin')
+                       .addClass('fa-check');
+                })
+
+            });
+        });
+
+
+    </script>
+{% endblock %}
 {% block pageclass %}
-<body data-container="body" itemtype="http://schema.org/Product" itemscope="itemscope"
-      class="catalog-product-view product-orion-two-tone-fitted page-layout-1column" aria-busy="false">
+<body data-container="body" itemscope="itemscope"
+      class="catalog-product-view product-{{ product.slug }} page-layout-1column" aria-busy="false">
 {% endblock %}
 {% block body %}
+
     <div class="breadcrumbs">
         <ul class="items">
             <li class="item home">
-                <a href="http://plazathemes.com/demo/presiden/english11/" title="Go to Home Page">
+                <a href="{{ path('home') }}" title="Go to Home Page">
                     Home </a>
             </li>
             <li class="item home">
@@ -23,15 +71,16 @@
     <main id="maincontent" class="page-main"><a id="contentarea" tabindex="-1"></a>
 
         <div class="page messages">
-            <div data-placeholder="messages">
-            </div>
-            <div data-bind="scope: 'messages'">
-                <div class="messages" data-bind="foreach: { data: cookieMessages, as: 'message' }">
-                </div>
-                <div class="messages" data-bind="foreach: { data: messages().messages, as: 'message' }">
-                </div>
+            <div class="messages" style="">
+                <div class="message-success success message">
+                    <div>
+                    You added {{ product.title }} to your shopping cart.
+                    </div>
+                    </div>
+
             </div>
         </div>
+
         <div class="columns">
             <div class="column main">
                 <div class="product-info-main">
@@ -60,7 +109,7 @@
                         </div>
                     </div>
                     <div class="product-add-form">
-                        {{ form_start(form) }}
+                        {{ form_start(form,{'attr': {'id': 'addToCart'}}) }}
                         <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
                         <input type="hidden" name="productPrice" value="{{ product.price }}"/>
                         <input type="hidden" name="productId" value="{{ product.id }}"/>
@@ -75,43 +124,15 @@
                                         </div>
                                     </div>
                                     <div class="actions">
-                                        <button id="product-addtocart-button" class="action primary tocart"
+                                        &nbsp;<button  class="action primary"
                                                 title="Add to Cart" type="submit">
-                                            <span>Add to Cart</span></button>
+                                            <span id="add-t-cart" class="fa fa-shopping-cart"></span>&nbsp;&nbsp; <span>Add to Cart</span></button>
                                     </div>
                                 </div>
                             </div>
                         {{ form_end(form) }}
                     </div>
-                    <script>
-                        require([
-                            'jquery',
-                            'priceBox'
-                        ], function ($) {
-                            var dataPriceBoxSelector = '[data-role=priceBox]',
-                                    dataProductIdSelector = '[data-product-id=63]',
-                                    priceBoxes = $(dataPriceBoxSelector + dataProductIdSelector);
 
-                            priceBoxes = priceBoxes.filter(function (index, elem) {
-                                return !$(elem).find('.price-from').length;
-                            });
-
-                            priceBoxes.priceBox({
-                                'priceConfig': {
-                                    "productId": "63",
-                                    "priceFormat": {
-                                        "pattern": "$%s",
-                                        "precision": 2,
-                                        "requiredPrecision": 2,
-                                        "decimalSymbol": ".",
-                                        "groupSymbol": ",",
-                                        "groupLength": 3,
-                                        "integerRequired": 1
-                                    }
-                                }
-                            });
-                        });
-                    </script>
                     <div class="product-social-links">
                         <div class="product-addto-links" data-role="add-to-links">
                             <a class="action towishlist" data-action="add-to-wishlist"

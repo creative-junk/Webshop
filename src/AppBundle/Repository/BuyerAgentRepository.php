@@ -4,8 +4,8 @@
  * (C) 2017 Crysoft Dynamics Ltd
  * Karbon V 2.1
  * User: Maxx
- * Date: 5/11/2017
- * Time: 11:48 AM
+ * Date: 5/12/2017
+ * Time: 4:23 PM
  ********************************************************************************/
 
 namespace AppBundle\Repository;
@@ -14,7 +14,7 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
-class GrowerAgentRepository extends EntityRepository
+class BuyerAgentRepository extends EntityRepository
 {
     public function getNrAgentRequests(User $user){
         $nrAgentRequests= $this->createQueryBuilder('user')
@@ -23,8 +23,8 @@ class GrowerAgentRepository extends EntityRepository
             ->setParameter('isAccepted', 'Requested')
             ->andWhere('user.listOwner <> :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
-            ->andWhere('user.grower = :grower')
-            ->setParameter('grower', $user)
+            ->andWhere('user.buyer = :buyer')
+            ->setParameter('buyer', $user)
             ->getQuery()
             ->getSingleScalarResult();
         if ($nrAgentRequests){
@@ -33,13 +33,24 @@ class GrowerAgentRepository extends EntityRepository
             return 0;
         }
     }
+    public function getAgentRequestsQuery(User $user){
+       return $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner <> :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->andWhere('user.buyer = :buyer')
+            ->setParameter('buyer', $user)
+            ->getQuery();
+    }
     public function getNrMyAgentRequests(User $user){
         $nrAgentRequests= $this->createQueryBuilder('user')
             ->select('count(user.id)')
             ->andWhere('user.status = :isAccepted')
             ->setParameter('isAccepted', 'Requested')
-            ->andWhere('user.grower = :whoIsGrower')
-            ->setParameter('whoIsGrower', $user)
+            ->andWhere('user.buyer = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
             ->andWhere('user.listOwner = :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
             ->getQuery()
@@ -49,5 +60,15 @@ class GrowerAgentRepository extends EntityRepository
         }else{
             return 0;
         }
+    }
+    public function getMyAgentRequests(User $user){
+        return $this->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.buyer = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->getQuery();
     }
 }

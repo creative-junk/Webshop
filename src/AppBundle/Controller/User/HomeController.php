@@ -11,6 +11,7 @@ namespace AppBundle\Controller\User;
 
 
 use AppBundle\Entity\Auction;
+use AppBundle\Entity\BillingAddress;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\CartItems;
 use AppBundle\Entity\GrowersList;
@@ -18,10 +19,12 @@ use AppBundle\Entity\Product;
 use AppBundle\Entity\User;
 use AppBundle\Form\AddGrowerForm;
 use AppBundle\Form\addToCartFormType;
+use AppBundle\Form\CheckoutForm;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/home")
@@ -151,8 +154,8 @@ class HomeController extends Controller
             $em->flush();
 
             $this->addFlash('success', 'Product Successfully Added to Cart!');
-
-            return $this->redirectToRoute('buyer_shop');
+            return new Response(null, 204);
+            //return $this->redirectToRoute('buyer_shop');
         }
         return $this->render('home/product-details.htm.twig', [
             'product' => $product,
@@ -449,21 +452,249 @@ class HomeController extends Controller
         ]);
 
     }
+    /**
+     * @Route("/requests/my/growers",name="my_buyer_grower_requests")
+     */
+    public function getMyGrowerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
 
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:BuyerGrower')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user);
 
-    public function buyerAgentExists(User $buyer, User $agent,User $whoseList){
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/growers/myRequests.htm.twig', [
+            'growerRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/requests/my/agents",name="my_buyer_agent_requests")
+     */
+    public function getMyAgentRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->getRepository('AppBundle:BuyerAgent')
+                                ->getMyAgentRequests($user);
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/agents/myRequests.htm.twig', [
+            'agentRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/requests/growers",name="buyer_grower_requests")
+     */
+    public function getGrowerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
         $em = $this->getDoctrine()->getManager();
 
-        $buyerAgent = $em->getRepository('AppBundle:BuyerAgent')
-            ->findOneBy([
-                'buyer'=>$buyer,
-                'agent'=>$agent,
-                'listOwner'=> $whoseList
-            ]);
-        if ($buyerAgent){
-            return true;
-        }else{
-            return false;
-        }
+        $query = $em->getRepository('AppBundle:BuyerGrower')
+                    ->getGrowerRequestsQuery($user);
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/growers/requests.html.twig', [
+            'breederRequests' => $result,
+        ]);
     }
+    /**
+     * @Route("/requests/agents",name="buyer_agent_requests")
+     */
+    public function getAgentRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->getRepository('AppBundle:BuyerAgent')
+                        ->getAgentRequestsQuery($user);
+
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/agents/requests.html.twig', [
+            'agentRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/cart",name="buyer-cart")
+     */
+    public function growerCartAction()
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $cart = $em->getRepository('AppBundle:Cart')
+            ->findMyCart($user);
+        if ($cart) {
+            $cartItems = $em->getRepository('AppBundle:CartItems')
+                ->findAllItemsInMyCartOrderByDate($cart[0]);
+        } else {
+            $cartItems = "";
+        }
+        return $this->render('cart.htm.twig', [
+            'cartItems' => $cartItems,
+            'cart' => $cart[0]
+        ]);
+    }
+
+    /**
+     * @Route("/checkout",name="buyer_checkout")
+     */
+    public function checkoutAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $billingAddress = new BillingAddress();
+        $billingAddress->setUser($user);
+        $billingAddress->setFirstName($user->getFirstName());
+        $billingAddress->setLastName($user->getLastName());
+        $billingAddress->setEmailAddress($user->getUserName());
+
+        $form = $this->createForm(CheckoutForm::class, $billingAddress);
+
+        $em = $this->getDoctrine()->getManager();
+        $cart = $em->getRepository('AppBundle:Cart')
+            ->findMyCart($user);
+
+
+        return $this->render(':partials/iflora/user:checkout.htm.twig', [
+            'buyerCheckoutForm' => $form->createView(),
+            'cart' => $cart[0]
+        ]);
+    }
+    public function getTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:BuyerGrower')
+            ->getNrGrowerRequests($user);
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrAgentRequests($user);
+        $totalRequests += $nrBreederRequests;
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getTotalGrowerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrGrowerRequests = $em->getRepository('AppBundle:BuyerGrower')
+            ->getNrGrowerRequests($user);
+
+        $totalRequests += $nrGrowerRequests;
+
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getTotalAgentRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrAgentRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:BuyerGrower')
+            ->getNrMyGrowerRequests($user);
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrMyAgentRequests($user);
+        $totalRequests += $nrBreederRequests;
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalGrowerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrBreederRequests = $em->getRepository('AppBundle:BuyerGrower')
+            ->getNrMyGrowerRequests($user);
+
+        $totalRequests += $nrBreederRequests;
+
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalAgentRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrMyAgentRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+
 }

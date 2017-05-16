@@ -846,9 +846,9 @@ class GrowerController extends Controller
     }
 
     /**
-     * @Route("/requests/breeders",name="breeder_requests")
+     * @Route("/requests/my/breeders",name="my_breeder_requests")
      */
-    public function getBreederRequestsAction(Request $request){
+    public function getMyBreederRequestsAction(Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
@@ -875,9 +875,9 @@ class GrowerController extends Controller
         ]);
     }
     /**
-     * @Route("/requests/agents",name="grower_agent_requests")
+     * @Route("/requests/my/agents",name="my_grower_agent_requests")
      */
-    public function getAgentRequestsAction(Request $request){
+    public function getMyAgentRequestsAction(Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
@@ -904,9 +904,9 @@ class GrowerController extends Controller
         ]);
     }
     /**
-     * @Route("/requests/my/breeders",name="my_breeder_requests")
+     * @Route("/requests/breeders",name="breeder_requests")
      */
-    public function getMyBreederRequestsAction(Request $request){
+    public function getBreederRequestsAction(Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
@@ -933,9 +933,9 @@ class GrowerController extends Controller
         ]);
     }
     /**
-     * @Route("/requests/my/agents",name="my_grower_agent_requests")
+     * @Route("/requests/agents",name="grower_agent_requests")
      */
-    public function getMyAgentRequestsAction(Request $request){
+    public function getAgentRequestsAction(Request $request){
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();

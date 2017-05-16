@@ -105,7 +105,7 @@
                             <div class="search-switcher">
 
                                 <form class="form minisearch" id="search_mini_form"
-                                      action="http://plazathemes.com/demo/presiden/english11/catalogsearch/result/"
+                                      action="#"
                                       method="get">
                                     <div class="field search">
                                         <input id="search" type="text" name="q" value=""
@@ -137,7 +137,7 @@
                                     </a>
 
                                     <div id="macrocart">
-                                        {{ render(controller('AppBundle:Cart:index')) }}
+                                        {{ render(controller('AppBundle:Cart:buyerIndex')) }}
                                     </div>
                                 </div>
                             {% elseif is_granted('ROLE_GROWER') %}
@@ -148,7 +148,7 @@
                                     </a>
 
                                     <div id="macrocart">
-                                        {{ render(controller('AppBundle:Cart:index')) }}
+                                        {{ render(controller('AppBundle:Cart:growerIndex')) }}
                                     </div>
                                 </div>
                             {% else %}

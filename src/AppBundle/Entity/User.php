@@ -98,11 +98,11 @@ class User implements UserInterface
     private $growerBuyers;
 
     /**
-     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="grower",fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GrowerAgent",mappedBy="grower",fetch="EXTRA_LAZY")
      */
     private $growerAgents;
     /**
-     * @ORM\OneToMany(targetEntity="BuyerGrower",mappedBy="agent",fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\GrowerAgent",mappedBy="agent",fetch="EXTRA_LAZY")
      */
     private $agentGrowers;
 
@@ -118,8 +118,10 @@ class User implements UserInterface
 
     public function __construct()
     {
-        $buyerAgents = new ArrayCollection();
-        $agentBuyer = new ArrayCollection();
+        $this->buyerAgents = new ArrayCollection();
+        $this->agentBuyers = new ArrayCollection();
+        $this->growerAgents = new ArrayCollection();
+        $this->agentGrowers = new ArrayCollection();
     }
 
     /**
@@ -483,5 +485,6 @@ class User implements UserInterface
     {
         $this->breederGrowers = $breederGrowers;
     }
+
 
 }

@@ -4,8 +4,8 @@
  * (C) 2017 Crysoft Dynamics Ltd
  * Karbon V 2.1
  * User: Maxx
- * Date: 5/11/2017
- * Time: 11:40 AM
+ * Date: 5/12/2017
+ * Time: 4:23 PM
  ********************************************************************************/
 
 namespace AppBundle\Repository;
@@ -14,64 +14,62 @@ namespace AppBundle\Repository;
 use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
-class GrowerBreederRepository extends EntityRepository
+class BuyerGrowerRepository extends EntityRepository
 {
-    public function getNrBreederRequests(User $user){
-        $nrBreederRequests= $this->createQueryBuilder('user')
+    public function getNrGrowerRequests(User $user){
+        $nrGrowerRequests= $this->createQueryBuilder('user')
             ->select('count(user.id)')
             ->andWhere('user.status = :isAccepted')
             ->setParameter('isAccepted', 'Requested')
             ->andWhere('user.listOwner <> :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
-            ->andWhere('user.grower = :grower')
-            ->setParameter('grower', $user)
+            ->andWhere('user.buyer = :buyer')
+            ->setParameter('buyer', $user)
             ->getQuery()
             ->getSingleScalarResult();
-        if ($nrBreederRequests){
-            return $nrBreederRequests;
+        if ($nrGrowerRequests){
+            return $nrGrowerRequests;
         }else{
             return 0;
         }
     }
-    public function getBreederRequestsQuery(User $user){
+    public function getGrowerRequestsQuery(User $user){
         return $this->createQueryBuilder('user')
             ->select('count(user.id)')
             ->andWhere('user.status = :isAccepted')
             ->setParameter('isAccepted', 'Requested')
             ->andWhere('user.listOwner <> :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
-            ->andWhere('user.grower = :grower')
-            ->setParameter('grower', $user)
+            ->andWhere('user.buyer = :buyer')
+            ->setParameter('buyer', $user)
             ->getQuery();
     }
 
-    public function getNrMyBreederRequests(User $user){
-        $nrBreederRequests= $this->createQueryBuilder('user')
+    public function getNrMyGrowerRequests(User $user){
+        $nrGrowerRequests= $this->createQueryBuilder('user')
             ->select('count(user.id)')
             ->andWhere('user.status = :isAccepted')
             ->setParameter('isAccepted', 'Requested')
-            ->andWhere('user.grower = :whoIsGrower')
-            ->setParameter('whoIsGrower', $user)
+            ->andWhere('user.buyer = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
             ->andWhere('user.listOwner = :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
             ->getQuery()
             ->getSingleScalarResult();
-        if ($nrBreederRequests){
-            return $nrBreederRequests;
+        if ($nrGrowerRequests){
+            return $nrGrowerRequests;
         }else{
             return 0;
         }
     }
-    public function getMyBreederRequestsQuery(User $user){
+    public function getMyGrowerRequests(User $user){
         return $this->createQueryBuilder('user')
-            ->select('count(user.id)')
             ->andWhere('user.status = :isAccepted')
             ->setParameter('isAccepted', 'Requested')
-            ->andWhere('user.grower = :whoIsGrower')
-            ->setParameter('whoIsGrower', $user)
+            ->andWhere('user.buyer = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
             ->andWhere('user.listOwner = :whoOwnsList')
             ->setParameter('whoOwnsList', $user)
             ->getQuery();
     }
-
 }

@@ -74,4 +74,19 @@ class BuyerAgentController extends Controller
             return false;
         }
     }
+    /**
+     * @Route("/buyer/request/agent/{id}/cancel",name="cancel-buyer-agent-request")
+     */
+
+    public function cancelGrowerBreederRequestAction(BuyerAgent $buyerAgent)
+    {
+        $buyerAgent->setStatus("Cancelled");
+        $buyerAgent->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($buyerAgent);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
 }

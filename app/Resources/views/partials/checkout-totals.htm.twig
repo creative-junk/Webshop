@@ -6,18 +6,18 @@
 
                 <form>
                     <fieldset>
-                        <label class="col-xs-6">cart subtotal</label>
-                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartAmount }}</span>
+                        <label class="col-xs-6">subtotal</label>
+                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartAmount | number_format(2, '.', ',') }}</span>
                     </fieldset>
 
                     <fieldset>
                         <label class="col-xs-6">shipping</label>
-                        <span class="col-xs-6 value"></span>
+                        <span class="col-xs-6 value">{{ cart.cartCurrency }} 00.0</span>
                     </fieldset>
                     <hr>
                     <fieldset class="total">
                         <label class="col-xs-6">order total</label>
-                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartAmount }}</span>
+                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartAmount | number_format(2, '.', ',') }}</span>
                     </fieldset>
 
 

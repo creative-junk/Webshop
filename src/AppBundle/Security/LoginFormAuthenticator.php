@@ -35,7 +35,7 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
     /**
      * LoginFormAuthenticator constructor.
      */
-    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, String $redirectFailureUrl = null, String $redirectSuccessUrl = null)
+    public function __construct(FormFactoryInterface $formFactory, EntityManager $em, RouterInterface $router, UserPasswordEncoder $passwordEncoder, $redirectFailureUrl = null, $redirectSuccessUrl = null)
     {
         $this->formFactory = $formFactory;
         $this->em = $em;
@@ -53,8 +53,11 @@ class LoginFormAuthenticator extends AbstractFormLoginAuthenticator
         if(!$isLoginSubmit){
             return;
         }
-
-        $this->redirectFailureUrl = $request->request->get('_failure_path');
+        if ($request->request->get('_failure_path')) {
+            $this->redirectFailureUrl = $request->request->get('_failure_path');
+        }else{
+            $this->redirectFailureUrl ='login';
+        }
         $this->redirectSuccessUrl = $request->request->get('_target_path');
 
         $form = $this->formFactory->create(LoginForm::class);
