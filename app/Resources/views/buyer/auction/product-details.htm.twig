@@ -90,7 +90,6 @@
                 </div>
 
                 <div class="product-add-form">
-                    {{ form_start(form) }}
                     <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
                     <input type="hidden" name="productPrice" value="{{ product.price }}"/>
                     <input type="hidden" name="productId" value="{{ product.id }}"/>
@@ -99,13 +98,13 @@
                         <div class="fieldset">
 
                             <div class="actions">
-                                <button id="product-addtocart-button" class="action primary tocart"
-                                        title="Add to Cart" type="submit">
-                                    <span>Buy Now</span></button>
+                                <a href="{{ path('buyer_checkout_auction',{'id': product.id }) }}" id="product-addtocart-button" class="action primary tocart"
+                                        title="Buy Now" type="submit">
+                                    <span>Buy Now</span></a>
                             </div>
                         </div>
                     </div>
-                    {{ form_end(form) }}
+
                 </div>
             </div>
             <div class="product media">

@@ -3,11 +3,10 @@
 namespace AppBundle\Form;
 
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShippingMethodFormType extends AbstractType
+class PaymentMethodFormType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -19,8 +18,8 @@ class ShippingMethodFormType extends AbstractType
 
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
-        return 'app_bundle_shipping_method_form_type';
+        return 'app_bundle_payment_method_form_type';
     }
 }

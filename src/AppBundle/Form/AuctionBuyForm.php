@@ -7,7 +7,7 @@ use Symfony\Component\Form\Extension\Core\Type\CountryType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class ShippingAddressFormType extends AbstractType
+class AuctionBuyForm extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
@@ -69,13 +69,11 @@ class ShippingAddressFormType extends AbstractType
 
     public function configureOptions(OptionsResolver $resolver)
     {
-        $resolver->setDefaults([
-            'data_class' => 'AppBundle\Entity\ShippingAddress'
-        ]);
+
     }
 
-    public function getName()
+    public function getBlockPrefix()
     {
-        return 'app_bundle_shipping_address_form_type';
+        return 'app_bundle_auction_buy_form';
     }
 }

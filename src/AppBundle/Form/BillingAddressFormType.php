@@ -19,6 +19,7 @@ class BillingAddressFormType extends AbstractType
             ->add('streetAddress')
             ->add('town')
             ->add('zip')
+            ->add('phoneNumber')
             ->add('country', CountryType::class);
     }
 

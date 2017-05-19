@@ -86,8 +86,9 @@
                         </strong>
                     </div>
                     <div class="h-right">
+                        <nav class="nav-container visible-lg visible-md">
                         {% if is_granted('ROLE_BUYER') %}
-                            {{ include(':nav:buyer.htm.twig') }}
+                            {{ knp_menu_render('AppBundle:Builder:mainUserMenu') }}
                         {% elseif is_granted('ROLE_GROWER') %}
                             {{ include(':nav:grower.htm.twig') }}
                         {% elseif is_granted('ROLE_BREEDER') %}
@@ -98,28 +99,13 @@
                             {{ include(':nav:nav.htm.twig') }}
 
                         {% endif %}
-
+                        </nav>
 
 
                         <div class="absolute">
                             <div class="search-switcher">
 
-                                <form class="form minisearch" id="search_mini_form"
-                                      action="#"
-                                      method="get">
-                                    <div class="field search">
-                                        <input id="search" type="text" name="q" value=""
-                                               placeholder="Search for item..." class="input-text" maxlength="128"
-                                               role="combobox" aria-haspopup="false" aria-autocomplete="both"
-                                               autocomplete="off">
 
-
-                                        <button type="submit" title="Search" class="action fa fa-search" disabled="">
-                                            <span></span>
-                                        </button>
-                                    </div>
-
-                                </form>
                             </div>
                             <script type="text/javascript">
                                 function show_cart() {

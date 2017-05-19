@@ -32,11 +32,20 @@ class Cart
      * @ORM\Column(type="string")
      */
     private $cartAmount;
+
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $cartTotal;
     /**
      * @ORM\Column(type="integer")
      */
     private $nrItems;
 
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $shippingCost;
     /**
      * @ORM\Column(type="datetime")
      */
@@ -49,6 +58,10 @@ class Cart
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      */
     private $ownedBy;
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\CartItems",mappedBy="cart")
+     */
+    private $cartItems;
 
     public function __construct()
     {
@@ -157,11 +170,43 @@ class Cart
     }
 
     /**
-     * @return mixed
+     * @return ArrayCollection [CartItem]
      */
     public function getCartItems()
     {
         return $this->cartItems;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getShippingCost()
+    {
+        return $this->shippingCost;
+    }
+
+    /**
+     * @param mixed $shippingCost
+     */
+    public function setShippingCost($shippingCost)
+    {
+        $this->shippingCost = $shippingCost;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCartTotal()
+    {
+        return $this->cartTotal;
+    }
+
+    /**
+     * @param mixed $cartTotal
+     */
+    public function setCartTotal($cartTotal)
+    {
+        $this->cartTotal = $cartTotal;
     }
 
 }

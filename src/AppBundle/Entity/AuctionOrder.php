@@ -15,10 +15,10 @@ use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
- * @ORM\Table(name="user_order")
- * @ORM\Entity(repositoryClass="AppBundle\Repository\OrderRepository")
+ * @ORM\Table(name="auction_order")
+ * @ORM\Entity(repositoryClass="AppBundle\Repository\AuctionOrderRepository")
  */
-class UserOrder
+class AuctionOrder
 {
     /**
      * @ORM\Id
@@ -26,10 +26,7 @@ class UserOrder
      * @ORM\Column(type="integer")
      */
     private $id;
-    /**
-     * @ORM\Column(type="boolean")
-     */
-    private $isAuctionOrder;
+
     /**
      * @ORM\Column(type="string")
      */
@@ -78,7 +75,10 @@ class UserOrder
      * @ORM\Column(type="datetime")
      */
     private $updatedAt;
-
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\AuctionOrderItems",mappedBy="order")
+     */
+    private $orderItems;
     /**
      * @ORM\Column(type="string")
      */
@@ -87,12 +87,13 @@ class UserOrder
      * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $user;
-
+    private $whoseOrder;
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\OrderItems",mappedBy="order")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\JoinColumn(nullable=false)
      */
-    private $orderItems;
+    private $agent;
+
 
     function __construct()
     {
@@ -240,21 +241,6 @@ class UserOrder
         $this->createdAt = $createdAt;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getIsAuctionOrder()
-    {
-        return $this->isAuctionOrder;
-    }
-
-    /**
-     * @param mixed $isAuctionOrder
-     */
-    public function setIsAuctionOrder($isAuctionOrder)
-    {
-        $this->isAuctionOrder = $isAuctionOrder;
-    }
 
     /**
      * @return mixed
@@ -272,21 +258,7 @@ class UserOrder
         $this->orderStatus = $orderStatus;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
 
-    /**
-     * @param mixed $user
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-    }
 
     /**
      * @return mixed
@@ -353,7 +325,39 @@ class UserOrder
     }
 
     /**
-     * @return ArrayCollection[OrderItems]
+     * @return User
+     */
+    public function getWhoseOrder()
+    {
+        return $this->whoseOrder;
+    }
+
+    /**
+     * @param User $whoseOrder
+     */
+    public function setWhoseOrder($whoseOrder)
+    {
+        $this->whoseOrder = $whoseOrder;
+    }
+
+    /**
+     * @return User
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
+
+    /**
+     * @param User $agent
+     */
+    public function setAgent($agent)
+    {
+        $this->agent = $agent;
+    }
+
+    /**
+     * @return ArrayCollection[AuctionOrderItems]
      */
     public function getOrderItems()
     {
@@ -361,7 +365,7 @@ class UserOrder
     }
 
     /**
-     * @param ArrayCollection[OrderItems]
+     * @param ArrayCollection[AuctionOrderItems]
      */
     public function setOrderItems($orderItems)
     {

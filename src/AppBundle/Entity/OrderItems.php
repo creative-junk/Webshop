@@ -36,7 +36,7 @@ class OrderItems
      */
     private $lineTotal;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserOrder")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\UserOrder",inversedBy="orderItems",cascade={"persist"})
      */
     private $order;
     /**
@@ -91,6 +91,38 @@ class OrderItems
     public function setLineTotal($lineTotal)
     {
         $this->lineTotal = $lineTotal;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOrder()
+    {
+        return $this->order;
+    }
+
+    /**
+     * @param mixed $order
+     */
+    public function setOrder($order)
+    {
+        $this->order = $order;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param mixed $product
+     */
+    public function setProduct($product)
+    {
+        $this->product = $product;
     }
 
 }

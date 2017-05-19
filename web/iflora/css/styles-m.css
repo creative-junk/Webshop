@@ -2683,7 +2683,6 @@ a.action.primary:hover, a.action.primary:active, a.action.primary:focus {
     color: #fff;
     cursor: pointer;
     display: inline-block;
-    font-family: 'Open Sans', 'Open Sans';
     font-weight: 700;
     padding: 7px 15px;
     font-size: 1.4rem;

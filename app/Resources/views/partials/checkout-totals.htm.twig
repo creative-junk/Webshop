@@ -12,12 +12,12 @@
 
                     <fieldset>
                         <label class="col-xs-6">shipping</label>
-                        <span class="col-xs-6 value">{{ cart.cartCurrency }} 00.0</span>
+                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.shippingCost | number_format(2, '.', ',') }}</span>
                     </fieldset>
                     <hr>
                     <fieldset class="total">
                         <label class="col-xs-6">order total</label>
-                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartAmount | number_format(2, '.', ',') }}</span>
+                        <span class="col-xs-6 value">{{ cart.cartCurrency }} {{ cart.cartTotal | number_format(2, '.', ',') }}</span>
                     </fieldset>
 
 

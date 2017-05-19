@@ -31,7 +31,7 @@
                                         <li>BILLING ADDRESS</li>
                                         <li>SHIPPING ADDRESS</li>
                                         <li><a class="progress-active">SHIPPING METHOD</a></li>
-                                        <li>PAY</li>
+                                        <li>PAYMENT</li>
                                     </ul>
                                 </div>
 
@@ -39,62 +39,61 @@
                                 <!-- End id="checkout-progress" -->
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
-                                        <span>billing address</span>
+                                        <span>shipping method</span>
                                     </h4>
                                 </div>
-                                <div class="panel-body step-1">
-                                   {{ form_start(buyerCheckoutForm) }}
+                                <div class="panel-body step-3">
+                                    {{ form_start(buyerCheckoutForm) }}
+                                    <div class="section-shopping-cart-page row field-row">
+                                        <div class="shipping-method col-md-4 col-lg-3">
+                                            <div>
+                                                <h4>
+                                                    Ground Shipping
+                                                    <small></small>
+                                                </h4>
 
-                                        <div class="row field-row">
-                                            <div class="col-xs-6">
-                                                {{ form_row(buyerCheckoutForm.firstName, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                            <div class="col-xs-6 col-right">
-                                                {{ form_row(buyerCheckoutForm.lastName, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                        </div>
-                                        <div class="row field-row ">
-                                            <div class="col-xs-12">
-                                                {{ form_row(buyerCheckoutForm.company, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                        </div>
-                                        <div class="row field-row ">
-                                            <div class="col-xs-12">
-                                                {{ form_row(buyerCheckoutForm.streetAddress, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                        </div>
-                                        <div class="row field-row ">
-                                            <div class="col-xs-10">
-                                                {{ form_row(buyerCheckoutForm.town, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                            <div class="col-xs-2">
-                                                {{ form_row(buyerCheckoutForm.zip, { 'attr': {'class': 'md-select'} }) }}
-                                            </div>
-                                        </div>
-                                        <div class="row field-row ">
-                                            <div class="col-xs-6">
-                                                {{ form_row(buyerCheckoutForm.country, { 'attr': {'class': 'md-select'} }) }}
-                                            </div>
+                                                <div class="box-content highlight" id="shipping-methods">
+    			                			                <span class="">
+    				                                          <input type="radio" value="500" name="shippingCost" id="option1" checked>
+    			                                            </span>
+                                                            <span class="price">
+    			                                                <strong>$500.00</strong>
+    			                                           </span>
+                                                </div>
 
-                                        </div>
-                                        <div class="row field-row ">
-                                            <div class="col-xs-6">
-                                                {{ form_row(buyerCheckoutForm.emailAddress, { 'attr': {'class': 'md-input'} }) }}
-                                            </div>
-                                            <div class="col-xs-6 col-right">
-                                                {{ form_row(buyerCheckoutForm.phoneNumber, { 'attr': {'class': 'md-input'} }) }}
                                             </div>
                                         </div>
-                                        <div class="row field-row checkout-button-row">
+                                        <div class="shipping-method col-md-4 col-lg-3">
+                                            <div>
+                                                <h4>
+                                                    Freight Shipping
+                                                    <small></small>
+                                                </h4>
 
-                                            <div class="primary pull-right">
-                                                <a class="md-button step-btn" type="submit" id="billing-continue">continue</a>
+                                                <div class="box-content highlight" id="shipping-methods">
+    			                			                <span class="">
+    				                                          <input type="radio" value="1500" name="shippingCost" id="option1">
+    			                                            </span>
+                                                    <span class="price">
+    			                                                <strong>$1,500.00</strong>
+    			                                           </span>
+                                                </div>
+
                                             </div>
-
+                                        </div>
+                                    </div>
+                                    <div class="row field-row checkout-button-row">
+                                        <div class="col-xs-6 button-holder">
+                                            <a class="md-button gray step-btn" href="#"><span class="fa fa-chevron-circle-left"></span> shipping address</a>
+                                        </div>
+                                        <div class="col-xs-6 primary pull-right">
+                                            <button class="md-button action primary" type="submit" id="billing-continue">continue</button>
                                         </div>
 
-                                        <input type="hidden" id="billing-current-step" name="step" value="billing_info">
-                                        <input type="hidden" id="billing-next-step" name="nextStep" value="shipping_info">
+                                    </div>
+
+                                    <input type="hidden" id="billing-current-step" name="step" value="billing_info">
+                                    <input type="hidden" id="billing-next-step" name="nextStep" value="shipping_info">
                                     {{ form_end(buyerCheckoutForm) }}
                                 </div>
                             </div>

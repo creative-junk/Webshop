@@ -12,10 +12,10 @@ namespace AppBundle\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="AppBundle\Repository\CartItemsRepository")
- * @ORM\Table(name="cart_items")
+ * @ORM\Entity
+ * @ORM\Table(name="auction_order_items")
  */
-class CartItems
+class AuctionOrderItems
 {
     /**
      * @ORM\Id
@@ -36,12 +36,11 @@ class CartItems
      */
     private $lineTotal;
     /**
-     * @ORM\ManyToOne(targetEntity="Cart",inversedBy="cartItems")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\AuctionOrder",inversedBy="orderItems")
      */
-    private $cart;
+    private $order;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product",cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Auction")
      * @ORM\JoinColumn(nullable=false)
      */
     private $product;
@@ -97,17 +96,17 @@ class CartItems
     /**
      * @return mixed
      */
-    public function getCart()
+    public function getOrder()
     {
-        return $this->cart;
+        return $this->order;
     }
 
     /**
-     * @param mixed $cart
+     * @param mixed $order
      */
-    public function setCart($cart)
+    public function setOrder($order)
     {
-        $this->cart = $cart;
+        $this->order = $order;
     }
 
     /**
@@ -121,17 +120,9 @@ class CartItems
     /**
      * @param mixed $product
      */
-    public function setProduct(Product $product)
+    public function setProduct($product)
     {
         $this->product = $product;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
     }
 
 }

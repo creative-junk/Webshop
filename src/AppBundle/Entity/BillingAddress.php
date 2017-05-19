@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @Doctrine\ORM\Mapping\Entity
+ * @Doctrine\ORM\Mapping\Entity(repositoryClass="AppBundle\Repository\BillingAddressRepository")
  * @Doctrine\ORM\Mapping\Table(name="billing_address")
  */
 class BillingAddress
@@ -226,6 +226,9 @@ class BillingAddress
     public function setUser(User $user)
     {
         $this->user = $user;
+    }
+    public function __toString(){
+        return $this->getFirstName().$this->getLastName();
     }
 
 }

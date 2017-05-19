@@ -111,6 +111,7 @@ class Auction
      */
     private $agent;
 
+
     public function __construct()
     {
         // we set up "created"+"modified"
@@ -276,7 +277,7 @@ class Auction
     }
 
     /**
-     * @return mixed
+     * @return User
      */
     public function getAgent()
     {
@@ -286,7 +287,7 @@ class Auction
     /**
      * @param mixed $agent
      */
-    public function setAgent($agent)
+    public function setAgent(User $agent)
     {
         $this->agent = $agent;
     }
@@ -439,6 +440,11 @@ class Auction
             $this->updatedAt = new \DateTimeImmutable();
         }
         return $this;
+    }
+    function __toString()
+    {
+
+       return $this->title;
     }
 
 }
