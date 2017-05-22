@@ -26,6 +26,7 @@ use AppBundle\Form\AddGrowerForm;
 use AppBundle\Form\addToCartFormType;
 use AppBundle\Form\AuctionBuyForm;
 use AppBundle\Form\CheckoutForm;
+use AppBundle\Form\FilterFormType;
 use AppBundle\Form\PaymentMethodFormType;
 use AppBundle\Form\ShippingAddressFormType;
 use AppBundle\Form\ShippingMethodFormType;
@@ -76,6 +77,69 @@ class HomeController extends Controller
     }
 
     /**
+     * @Route("/filter",name="filter-products")
+     */
+    public function filterProductAction(Request $request){
+        $form = $this->createForm(FilterFormType::class);
+
+        $form->handleRequest($request);
+        $filterValues = Array();
+        $filterValues['season'] = '';
+        $filterValues['color'] = '';
+        $filterValues['price'] = '';
+        $filterValues['grower'] = '';
+        $filterValues['vaselife'] = '';
+        $filterValues['stemLength'] = '';
+        $filterValues['headsize'] = '';
+
+
+        if ($form->isSubmitted() && $form->isValid()){
+            $season = $request->request->get('season');
+            $color = $request->request->get('color');
+            $price = $request->request->get('price');
+            $grower = $request->request->get('user');
+            $vaselife = $request->request->get('vaselife');
+            $stemLength = $request->request->get('stemLength');
+            $headsize = $request->request->get('headsize');
+
+            $filterValues['season'] = $season;
+            $filterValues['color'] = $color;
+            $filterValues['price'] = $price;
+            $filterValues['grower'] = $grower;
+            $filterValues['vaselife'] = $vaselife;
+            $filterValues['stemLength'] = $stemLength;
+            $filterValues['headsize'] = $headsize;
+
+            // initialize a query builder
+            $filterBuilder = $this->get('doctrine.orm.entity_manager')
+                ->getRepository('AppBundle:Product')
+                ->createQueryBuilder('e');
+
+            // build the query from the given form object
+            $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $filterBuilder);
+            $query = $filterBuilder->getQuery();
+            /**
+             * @var $paginator \Knp\Component\Pager\Paginator
+             */
+            $paginator  = $this->get('knp_paginator');
+            $result = $paginator->paginate(
+                $query,
+                $request->query->getInt('page', 1),
+                $request->query->getInt('limit', 9)
+            );
+
+            return $this->render('home/shop.htm.twig', [
+                'products' => $result,
+                'filterValues'=>$filterValues
+            ]);
+        }
+
+        return $this->render('home/Filter/filter.htm.twig', [
+            'form' => $form->createView(),
+            'filterValues'=>$filterValues
+        ]);
+    }
+    /**
      * @Route("/market/",name="buyer_shop")
      */
     public function buyerShopGridAction(Request $request = null)
@@ -108,7 +172,8 @@ class HomeController extends Controller
 
         return $this->render('home/shop.htm.twig', [
             'products' => $result,
-            'form' => $form->createView()
+            'form' => $form->createView(),
+            'filterValues'=>''
         ]);
     }
 

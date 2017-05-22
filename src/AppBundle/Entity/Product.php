@@ -335,6 +335,14 @@ class Product
     {
         return $this->user;
     }
+    /**
+     * @return User $user
+     *
+     */
+    public function getGrower()
+    {
+        return $this->user;
+    }
 
     /**
      * @param User $user
