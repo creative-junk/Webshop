@@ -77,38 +77,22 @@ class HomeController extends Controller
     }
 
     /**
-     * @Route("/filter",name="filter-products")
+     * @Route("/market/filter",name="filter-products")
      */
     public function filterProductAction(Request $request){
+
+        $filterValues = Array();
+
+
         $form = $this->createForm(FilterFormType::class);
 
         $form->handleRequest($request);
-        $filterValues = Array();
-        $filterValues['season'] = '';
-        $filterValues['color'] = '';
-        $filterValues['price'] = '';
-        $filterValues['grower'] = '';
-        $filterValues['vaselife'] = '';
-        $filterValues['stemLength'] = '';
-        $filterValues['headsize'] = '';
-
 
         if ($form->isSubmitted() && $form->isValid()){
-            $season = $request->request->get('season');
-            $color = $request->request->get('color');
-            $price = $request->request->get('price');
-            $grower = $request->request->get('user');
-            $vaselife = $request->request->get('vaselife');
-            $stemLength = $request->request->get('stemLength');
-            $headsize = $request->request->get('headsize');
 
-            $filterValues['season'] = $season;
-            $filterValues['color'] = $color;
-            $filterValues['price'] = $price;
-            $filterValues['grower'] = $grower;
-            $filterValues['vaselife'] = $vaselife;
-            $filterValues['stemLength'] = $stemLength;
-            $filterValues['headsize'] = $headsize;
+            $filterValues=$form->getData();
+
+            $filteredForm = $this->createForm(FilterFormType::class,$filterValues);
 
             // initialize a query builder
             $filterBuilder = $this->get('doctrine.orm.entity_manager')
@@ -117,26 +101,29 @@ class HomeController extends Controller
 
             // build the query from the given form object
             $this->get('lexik_form_filter.query_builder_updater')->addFilterConditions($form, $filterBuilder);
+
             $query = $filterBuilder->getQuery();
             /**
              * @var $paginator \Knp\Component\Pager\Paginator
              */
             $paginator  = $this->get('knp_paginator');
+
             $result = $paginator->paginate(
                 $query,
                 $request->query->getInt('page', 1),
                 $request->query->getInt('limit', 9)
             );
 
-            return $this->render('home/shop.htm.twig', [
-                'products' => $result,
-                'filterValues'=>$filterValues
+            return $this->render('home/Filter/shop.htm.twig', [
+                'form' => $filteredForm->createView(),
+                'products' => $result
+
             ]);
         }
 
         return $this->render('home/Filter/filter.htm.twig', [
-            'form' => $form->createView(),
-            'filterValues'=>$filterValues
+            'form' => $form->createView()
+
         ]);
     }
     /**
@@ -150,7 +137,9 @@ class HomeController extends Controller
 
         $cart->setOwnedBy($user);
 
-        $form = $this->createForm(addToCartFormType::class, $cart);
+        //$form = $this->createForm(addToCartFormType::class, $cart);
+
+        $form = $this->createForm(FilterFormType::class);
 
         $em = $this->getDoctrine()->getManager();
         $queryBuilder = $em->getRepository('AppBundle:Product')
@@ -176,7 +165,40 @@ class HomeController extends Controller
             'filterValues'=>''
         ]);
     }
+    /**
+     * @Route("/market/grower/view/roses/{id}",name="view_grower_roses")
+     */
+    public function viewGrowerRosesAction(Request $request,User $user)
+    {
 
+        $form = $this->createForm(FilterFormType::class);
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:Product')
+            ->createQueryBuilder('product')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('product.user= :isGrower')
+            ->setParameter('isGrower', $user)
+            ->orderBy('product.createdAt', 'DESC');
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+
+        return $this->render('home/shop.htm.twig', [
+            'products' => $result,
+            'form' => $form->createView(),
+            'filterValues'=>''
+        ]);
+    }
     /**
      * @Route("/market/{id}/view",name="buyer_product_details")
      */
@@ -264,13 +286,13 @@ class HomeController extends Controller
      */
     public function buyerGrowersAction(Request $request = null)
     {
-        $grower = $this->get('security.token_storage')->getToken()->getUser();
+        $buyer = $this->get('security.token_storage')->getToken()->getUser();
 
         $em = $this->getDoctrine()->getManager();
 
         $buyerGrowers = $em->getRepository('AppBundle:BuyerGrower')
             ->findBy([
-                'listOwner' => $grower
+                'listOwner' => $buyer
             ]);
         $growerIds = array();
 
@@ -308,11 +330,58 @@ class HomeController extends Controller
         ]);
 
     }
-
     /**
-     * @Route("/growers/{id}/view",name="view_growers")
+     * @Route("/growers/my",name="my_buyer_growers")
      */
-    public function addGrowerAction(Request $request, User $grower)
+    public function myGrowersAction(Request $request){
+        $buyer = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+
+        $buyerGrowers = $em->getRepository('AppBundle:BuyerGrower')
+            ->findBy([
+                'listOwner' => $buyer
+            ]);
+        $growerIds = array();
+
+        if ($buyerGrowers) {
+
+            foreach ($buyerGrowers as $buyerGrower) {
+                $growerIds[] = $buyerGrower->getGrower();
+            }
+        }else{
+            $growerIds[] = 1;
+        }
+
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.id IN (:growers)')
+            ->setParameter('growers',$growerIds)
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'grower');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/growers/list.html.twig', [
+            'growers' => $result,
+        ]);
+
+    }
+    /**
+     * @Route("/growers/{id}/view",name="view_grower")
+     */
+    public function viewGrowerAction(Request $request, User $grower)
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
@@ -394,7 +463,53 @@ class HomeController extends Controller
         ]);
 
     }
+    /**
+     * @Route("/agents/my",name="my_buyer_agents")
+     */
+    public function myBuyerAgentsAction(Request $request){
+        $buyer = $this->get('security.token_storage')->getToken()->getUser();
 
+        $em = $this->getDoctrine()->getManager();
+
+        $buyerAgents = $em->getRepository('AppBundle:BuyerAgent')
+            ->findBy([
+                'listOwner' => $buyer
+            ]);
+        $agentIds = array();
+
+        if ($buyerAgents) {
+
+            foreach ($buyerAgents as $buyerAgent) {
+                $agentIds[] = $buyerAgent->getAgent();
+            }
+        }else{
+            $agentIds[] = 1;
+        }
+        $queryBuilder = $em->getRepository('AppBundle:User')
+            ->createQueryBuilder('user')
+            ->andWhere('user.id IN (:agents)')
+            ->setParameter('agents',$agentIds)
+            ->andWhere('user.isActive = :isActive')
+            ->setParameter('isActive', true)
+            ->andWhere('user.userType = :userType')
+            ->setParameter('userType', 'agent');
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('home/agents/list.html.twig', [
+            'agents' => $result,
+        ]);
+
+    }
 
     /**
      * @Route("/agents/{id}/view",name="view_agent")
@@ -413,15 +528,7 @@ class HomeController extends Controller
         return $this->render('home/agents/auction.html.twig');
     }
 
-    /**
-     * @Route("/growers/{id}/view",name="view_grower")
-     */
-    public function growerProfileActionAction()
-    {
 
-        return $this->render('home/growers/view.htm.twig');
-
-    }
     /**
      * @Route("/orders/",name="my_order_list")
      */

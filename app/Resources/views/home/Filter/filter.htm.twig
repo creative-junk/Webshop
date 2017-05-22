@@ -1,82 +1,44 @@
+<script type="text/javascript">
+    $(document).ready(function() {
+        $('#resetForm').on('click', function () {
+            $('#form_filter').find('input:text, input:password, select, textarea').val('');
+        });
+    });
+</script>
 <div class="block-content">
-{{ form_start(form, {'action': path('filter-products')}) }}
+    {{ form_start(form, {'action': path('filter-products'),'attr': {'id': 'form_filter'}}) }}
     <fieldset class="fieldset filter">
-        {% if(filterValues is defined) %}
 
-<div class="field">
-    {{ form_row(form.season,
-    {'value' : filterValues.season}
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.color,
+        <div class="field">
 
-    {'value' : filterValues.color}
+            {{ form_row(form.season) }}
+        </div>
+        <div class="field">
+            {{ form_row(form.color) }}
 
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.price,
+        </div>
+        <div class="field">
+            {{ form_row(form.price) }}
+        </div>
+        <div class="field">
+            {{ form_row(form.user) }}
+        </div>
+        <div class="field">
+            {{ form_row(form.vaselife) }}
+        </div>
+        <div class="field">
+            {{ form_row(form.stemLength ) }}
+        </div>
+        <div class="field">
+            {{ form_row(form.headsize ) }}
+        </div>
 
-    {'value' : filterValues.price}
-
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.user,
-
-    {'value' : filterValues['grower']}
-
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.vaselife,
-
-    {'value' : filterValues.vaselife}
-
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.stemLength,
-
-    {'value' : filterValues.stemLength}
-
-    ) }}
-</div>
-<div class="field">
-    {{ form_row(form.headsize,
-
-    {'value' : filterValues.headsize}
-
-    ) }}
-</div>
-            {% else %}
-                <div class="field">
-                    {{ form_row(form.season) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.color) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.price) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.user) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.vaselife) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.stemLength) }}
-                </div>
-                <div class="field">
-                    {{ form_row(form.headsize) }}
-                </div>
-        {% endif %}
-<div class="field">
-<button class="action primary" type="submit">Filter
-</button>
-</div>
+        <div class="field">
+            <input class="action primary" id="resetForm" type="button" value="Reset">
+            </input>
+            <button class="action primary" type="submit">Filter
+            </button>
+        </div>
     </fieldset>
-{{ form_end(form) }}
+    {{ form_end(form) }}
 </div>

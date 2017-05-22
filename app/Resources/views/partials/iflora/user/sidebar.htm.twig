@@ -5,8 +5,7 @@
             <strong aria-expanded="false" aria-selected="false" data-role="title" role="tab" tabindex="0">
                 Shop By</strong></div>
         <div class="block-content filter-content">
-
-            {{ render(controller('AppBundle:User/Home:filterProduct')) }}
+            {{ include(':home/Filter:filter.htm.twig') }}
         </div>
     </div>
 </div>

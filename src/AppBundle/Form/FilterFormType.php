@@ -30,7 +30,9 @@ class FilterFormType extends AbstractType
                     'White' => 'White',
                     'Peach' => 'Peach',
                 ),
-                'placeholder' => 'Choose a Color'
+                'placeholder' => 'Choose a Color',
+                'data' => isset($options['data']) ? $options['data']['color'] : ''
+
             ])
             ->add('price',Filters\NumberFilterType::class)
             ->add('user',Filters\EntityFilterType::class,[
@@ -54,7 +56,7 @@ class FilterFormType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'data_class' => 'AppBundle\Entity\Product',
+
             'csrf_protection'=>false,
             'validation_groups' => array('filtering')
         ]);
@@ -62,6 +64,6 @@ class FilterFormType extends AbstractType
 
     public function getBlockPrefix()
     {
-        return 'app_bundle_filter_form_type';
+        return 'product_filter';
     }
 }
