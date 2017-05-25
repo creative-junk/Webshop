@@ -19,6 +19,7 @@ use AppBundle\Form\addToCartFormType;
 use AppBundle\Form\AgentProductForm;
 use AppBundle\Form\AuctionProductForm;
 use AppBundle\Form\ProductFormType;
+use AppBundle\Form\RecommendFormType;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
@@ -255,6 +256,38 @@ class AgentController extends Controller
     public function buyAction(Request $request, Product $product)
     {
         return $this->render('agent/auction/buy.htm.twig');
+    }
+    /**
+     * @Route("/auction/{id}/recommend",name="agent_auction_recommend")
+     */
+    public function recommendRosesAction(Request $request, Auction $product)
+    {
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $form = $this->createForm(RecommendFormType::class);
+        $em = $this->getDoctrine()->getManager();
+
+        $agentBuyers = $em->getRepository('AppBundle:BuyerAgent')
+            ->getMyAgentBuyers($user);
+
+        //only handles data on POST
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $ids= $request->request->get('buyer');
+            return $this->render('agent/auction/recommend.htm.twig',[
+                'product'=>$product,
+                'agentBuyers'=>$agentBuyers,
+                'form'=>$form->createView(),
+                'buyers'=>$ids
+            ]);
+        }
+
+        return $this->render('agent/auction/recommend.htm.twig',[
+            'product'=>$product,
+            'agentBuyers'=>$agentBuyers,
+            'form'=>$form->createView()
+        ]);
     }
     /**
      * @Route("/growers",name="agent_growers_list")

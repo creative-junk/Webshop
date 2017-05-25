@@ -127,5 +127,13 @@ class BuyerAgentRepository extends EntityRepository
             ->setParameter('whoOwnsList', $user)
             ->getQuery();
     }
-
+    public function getMyAgentBuyers(User $user){
+        return $this->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Accepted')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user)
+            ->getQuery()
+            ->execute();
+    }
 }

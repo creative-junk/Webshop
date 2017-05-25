@@ -66,7 +66,6 @@ class User implements UserInterface
      */
     private $roles =[];
 
-
     /**
      * @ORM\Column(type="boolean")
      */
@@ -118,6 +117,14 @@ class User implements UserInterface
      * @ORM\OneToMany(targetEntity="GrowerBreeder",mappedBy="breeder",fetch="EXTRA_LAZY")
      */
     private $breederGrowers;
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="listOwner",fetch="EXTRA_LAZY")
+     */
+    private $myLists;
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="recommendedBy",fetch="EXTRA_LAZY")
+     */
+    private $myRecommendations;
 
 
     public function __construct()
@@ -127,6 +134,8 @@ class User implements UserInterface
         $this->agentBuyers = new ArrayCollection();
         $this->growerAgents = new ArrayCollection();
         $this->agentGrowers = new ArrayCollection();
+        $this->myLists = new ArrayCollection();
+        $this->myRecommendations = new ArrayCollection();
     }
 
     /**
@@ -497,6 +506,22 @@ class User implements UserInterface
     public function getProducts()
     {
         return $this->products;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMyLists()
+    {
+        return $this->myLists;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getMyRecommendations()
+    {
+        return $this->myRecommendations;
     }
 
 

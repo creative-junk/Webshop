@@ -157,5 +157,9 @@ class BuyerAgent
     {
         $this->listOwner = $listOwner;
     }
+    function __toString()
+    {
+        $buyer = $this->buyer;
 
+    }
 }

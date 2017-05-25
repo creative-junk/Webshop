@@ -1,5 +1,5 @@
 {% extends 'base.html.twig' %}
-{% block title %}{{ product.title }}{% endblock %}
+{% block title %} Recommend {{ product.title }}{% endblock %}
 {% block pageclass %}
 <body data-container="body" itemtype="http://schema.org/Product" itemscope="itemscope"
       class="catalog-product-view product-orion-two-tone-fitted page-layout-1column" aria-busy="false">
@@ -15,8 +15,9 @@
             <a href="{{ path('agent_auction_product_list') }}" title="Go to Home Page">
                 Auction Market </a>
         </li>
+
         <li class="item product">
-            <strong>{{ product.title }}</strong>
+            Recommend <strong>{{ product.title }}</strong>
         </li>
     </ul>
 </div>
@@ -86,27 +87,11 @@
                 <div class="product attribute overview">
                     <div class="value" itemprop="description">
                         <p>{{ product.summary }}</p>
+
                     </div>
                 </div>
 
-                <div class="product-add-form">
-                    {{ form_start(form) }}
-                    <input type="hidden" name="productCurrency" value="{{ product.currency }}"/>
-                    <input type="hidden" name="productPrice" value="{{ product.price }}"/>
-                    <input type="hidden" name="productId" value="{{ product.id }}"/>
 
-                    <div class="box-tocart">
-                        <div class="fieldset">
-
-                            <div class="actions">
-                                <button id="product-addtocart-button" class="action primary tocart"
-                                        title="Add to Cart" type="submit">
-                                    <span>Buy Now</span></button>
-                            </div>
-                        </div>
-                    </div>
-                    {{ form_end(form) }}
-                </div>
             </div>
             <div class="product media">
                 <div class="gallery-placeholder" data-gallery-role="gallery-placeholder">
@@ -177,30 +162,26 @@
                          style="display: none;">
                     </div>
                 </div>
+                <h3>Recommend To:</h3>
 
+                {{ form_start(form) }}
+                <fieldset>
+                    <legend>Please select Buyers to recommend to</legend>
+                {% for agentBuyer in agentBuyers %}
+                    <p><span  style="display:inline-block;width:180px;"><strong>{{ agentBuyer.buyer.fullName }}</strong></span> <a href="#"
+                                class="action request js-request-user"
+                                title="Recommend to Buyer">
+                            <span class="fa fa-exchange fa-1x"></span>  Recommend
+
+                        </a></p>
+                {% else %}
+                    <p>You have no Buyers on record</p>
+                {% endfor %}
+
+                {{ form_end(form) }}
             </div>
-            <!--  <div class="product info detailed">
-                    <div class="product data items" role="tablist">
-                        <div id="tab-label-product.info.description" aria-controls="product.info.description"
-                             aria-expanded="true" aria-labeledby="tab-label-product.info.description-title"
-                             aria-selected="false" class="data item title active" data-collapsible="true"
-                             data-role="collapsible" role="tab" tabindex="0">
-                            <a id="tab-label-product.info.description-title" class="data switch" data-toggle="switch"
-                               href="#product.info.description" tabindex="-1">
-                                Details </a></div>
-                        <div id="product.info.description" aria-hidden="false"
-                             aria-labelledby="tab-label-product.info.description" class="data item content"
-                             data-role="content" role="tabpanel">
-                            <div class="product attribute description">
-                                <div class="value">
-                                    <p>{{ product.description }}</p>
-                                </div>
-                            </div>
-                        </div>
 
-                    </div>
-                </div>
-           --> </div>
+          </div>
     </div>
 </main>
 

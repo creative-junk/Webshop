@@ -9,6 +9,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -115,6 +116,10 @@ class Auction
      * @ORM\Column(type="string",nullable=true)
      */
     private $status;
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="product",fetch="EXTRA_LAZY")
+     */
+    private $productList;
 
     public function __construct()
     {
@@ -123,6 +128,7 @@ class Auction
         if ($this->getUpdatedAt() == null) {
             $this->setUpdatedAt(new \DateTime());
         }
+        $this->productList= new ArrayCollection();
 
     }
 
@@ -159,6 +165,7 @@ class Auction
         return $this->finalPrice;
     }
 
+
     /**
      * @param mixed $price
      */
@@ -166,7 +173,6 @@ class Auction
     {
         $this->finalPrice = $price;
     }
-
     /**
      * @return mixed
      */
@@ -344,6 +350,7 @@ class Auction
         $this->bundlePrice = $bundlePrice;
     }
 
+
     /**
      * @return mixed
      */
@@ -465,6 +472,14 @@ class Auction
     public function setStatus($status)
     {
         $this->status = $status;
+    }
+
+    /**
+     * @return ArrayCollection[MyList]
+     */
+    public function getProductList()
+    {
+        return $this->productList;
     }
 
 }
