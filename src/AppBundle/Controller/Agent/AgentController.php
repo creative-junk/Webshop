@@ -629,7 +629,7 @@ class AgentController extends Controller
         $user = $this->get('security.token_storage')->getToken()->getUser();
         $totalRequests = 0;
         $em = $this->getDoctrine()->getManager();
-        $nrGrowerRequests = $em->getRepository('AppBundle:BuyerGrower')
+        $nrGrowerRequests = $em->getRepository('AppBundle:GrowerAgent')
             ->getNrGrowerRequests($user);
 
         $nrBuyerRequests = $em->getRepository('AppBundle:BuyerAgent')
@@ -666,5 +666,61 @@ class AgentController extends Controller
         ]);
 
     }
+    public function getMyAuctionAgencyRequestsAction(){
+
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $totalRequests = 0;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $nrProductRequests = $em->getRepository('AppBundle:Auction')
+            ->findMyActiveProductRequests($user);
+
+        $totalRequests += $nrProductRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+    }
+    public function getMyOrderAssignmentRequestAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $nrOrderRequests = $em->getRepository('AppBundle:AuctionOrder')
+            ->findMyAuctionAgencyRequests($user);
+
+        $totalRequests += $nrOrderRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+    }
+    public function getMyTotalAgencyRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $nrProductRequests = $em->getRepository('AppBundle:Auction')
+            ->findMyActiveProductRequests($user);
+
+        $nrOrderRequests = $em->getRepository('AppBundle:AuctionOrder')
+            ->findMyAuctionAgencyRequests($user);
+
+        $totalRequests += $nrProductRequests;
+        $totalRequests += $nrOrderRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+    }
+
+
 
 }

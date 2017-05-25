@@ -444,6 +444,7 @@ class GrowerController extends Controller
         $product->setIsActive(true);
         $product->setIsAuthorized(true);
         $product->setUser($user);
+        $product->setStatus("Pending Agent");
         $form = $this->createForm(AuctionProductForm::class, $product);
 
         //only handles data on POST

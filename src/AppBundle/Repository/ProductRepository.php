@@ -106,4 +106,5 @@ class ProductRepository extends EntityRepository
             return 0;
         }
     }
+
 }

@@ -22,8 +22,8 @@ class AuctionOrderRepository extends EntityRepository
      */
     public function findAllUserOrdersOrderByDate(){
 
-        return $this->createQueryBuilder('user_order')
-            ->orderBy('user_order.createdAt','DESC')
+        return $this->createQueryBuilder('auction_order')
+            ->orderBy('auction_order.createdAt','DESC')
             ->getQuery()
             ->execute();
     }
@@ -32,10 +32,10 @@ class AuctionOrderRepository extends EntityRepository
      */
     public function findAllMyOrdersOrderByDate(User $user){
 
-        return $this->createQueryBuilder('user_order')
-            ->andWhere('user_order.whoseOrder= :createdBy')
+        return $this->createQueryBuilder('auction_order')
+            ->andWhere('auction_order.whoseOrder= :createdBy')
             ->setParameter('createdBy',$user)
-            ->orderBy('user_order.createdAt','DESC')
+            ->orderBy('auction_order.createdAt','DESC')
             ->getQuery()
             ->execute();
     }
@@ -44,11 +44,29 @@ class AuctionOrderRepository extends EntityRepository
      */
     public function findAllMyReceivedOrdersOrderByDate(User $user){
 
-        return $this->createQueryBuilder('user_order')
-            ->andWhere('user_order.vendor= :soldBy')
+        return $this->createQueryBuilder('auction_order')
+            ->andWhere('auction_order.vendor= :soldBy')
             ->setParameter('soldBy',$user)
-            ->orderBy('user_order.createdAt','DESC')
+            ->orderBy('auction_order.createdAt','DESC')
             ->getQuery()
             ->execute();
+    }
+    
+    public function findMyAuctionAgencyRequests(User $user){
+
+        $auctionAgencyRequests=$this->createQueryBuilder('auction_order')
+            ->select('count(auction_order.id)')
+            ->andWhere('auction_order.agent= :isAgent')
+            ->setParameter('isAgent',$user)
+            ->andWhere('auction_order.orderStatus = :orderStatus')
+            ->setParameter('orderStatus',"Pending Agent")
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($auctionAgencyRequests){
+            return $auctionAgencyRequests;
+
+        }else{
+            return 0;
+        }
     }
 }

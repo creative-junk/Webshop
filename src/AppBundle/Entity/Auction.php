@@ -111,6 +111,10 @@ class Auction
      */
     private $agent;
 
+    /**
+     * @ORM\Column(type="string",nullable=true)
+     */
+    private $status;
 
     public function __construct()
     {
@@ -445,6 +449,22 @@ class Auction
     {
 
        return $this->title;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
     }
 
 }

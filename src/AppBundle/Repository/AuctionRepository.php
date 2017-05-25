@@ -57,5 +57,22 @@ class AuctionRepository extends EntityRepository
             return 0;
         }
     }
+    public function findMyActiveProductRequests(User $user){
+        $nrProducts= $this->createQueryBuilder('product')
+            ->select('count(product.id)')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive',true)
+            ->andWhere('product.agent= :isAgent')
+            ->setParameter('isAgent',$user)
+            ->andWhere('product.status= :status')
+            ->setParameter('status',"Pending Agent")
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrProducts){
+            return $nrProducts;
+        }else{
+            return 0;
+        }
+    }
 
 }
