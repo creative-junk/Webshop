@@ -136,7 +136,7 @@ class Product
      */
     private $category;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="products")
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

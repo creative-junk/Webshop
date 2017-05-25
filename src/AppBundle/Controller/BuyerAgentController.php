@@ -89,4 +89,33 @@ class BuyerAgentController extends Controller
 
         return new Response(null, 204);
     }
+
+    /**
+     * @Route("/buyer/accept/{id}/request",name="accept-agent-buyer-request")
+     */
+    public function acceptBuyerRequest(BuyerAgent $buyerAgent){
+
+        $buyerAgent->setStatus("Accepted");
+        $buyerAgent->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($buyerAgent);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
+    /**
+     * @Route("/buyer/reject/{id}/request",name="reject-agent-buyer-request")
+     */
+    public function rejectBuyerRequest(BuyerAgent $buyerAgent){
+
+        $buyerAgent->setStatus("Rejected");
+        $buyerAgent->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($buyerAgent);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
 }

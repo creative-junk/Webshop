@@ -81,6 +81,10 @@ class User implements UserInterface
      */
     private $lastLoginTime;
     /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\Product",mappedBy="user",fetch="EXTRA_LAZY")
+     */
+    private $products;
+    /**
      * @ORM\OneToMany(targetEntity="BuyerAgent",mappedBy="buyer",fetch="EXTRA_LAZY")
      */
     private $buyerAgents;
@@ -118,6 +122,7 @@ class User implements UserInterface
 
     public function __construct()
     {
+        $this->products = new ArrayCollection();
         $this->buyerAgents = new ArrayCollection();
         $this->agentBuyers = new ArrayCollection();
         $this->growerAgents = new ArrayCollection();
@@ -484,6 +489,14 @@ class User implements UserInterface
     public function setBreederGrowers($breederGrowers)
     {
         $this->breederGrowers = $breederGrowers;
+    }
+
+    /**
+     * @return ArrayCollection[Products]
+     */
+    public function getProducts()
+    {
+        return $this->products;
     }
 
 

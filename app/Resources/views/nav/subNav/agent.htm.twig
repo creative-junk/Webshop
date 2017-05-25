@@ -29,3 +29,28 @@
         <li><a href="{{ path('my_agent_order_list') }}">My Orders</a></li>
     </ul>
 </div>
+<div class="my-acount" style="margin-right: 60px;height:20px">
+<span class="fa-stack fa-2x has-badge" style="color: black;position:absolute" data-count="{{ render(controller('AppBundle:Agent/Agent:getTotalRequests')) }}">
+    <i style="color: black" class="fa fa-envelope fa-1x fa-inverse"></i>
+</span>
+<strong class="label" style="color:black;"></strong>
+<ul class="header links" style="left:-100px;margin-top:5px">
+    <li class="top">Received Requests</li>
+    <li><a href="{{ path('agent_buyer_requests') }}">Buyers ( {{ render(controller('AppBundle:Agent/Agent:getTotalBuyerRequests')) }} )</a></li>
+    <li><a href="{{ path('agent_grower_requests') }}">Growers ( {{ render(controller('AppBundle:Agent/Agent:getTotalGrowerRequests')) }} )</a></li>
+
+</ul>
+</div>
+
+<div class="my-acount" style="margin-right: 60px;height:20px">
+    <span class="fa-stack fa-2x has-badge" style="color: black;position:absolute" data-count="{{ render(controller('AppBundle:Agent/Agent:getMyTotalRequests')) }}">
+    <i style="color: black" class="fa fa-exchange fa-1x fa-inverse"></i>
+</span>
+    <strong class="label" style="color:black;"></strong>
+    <ul class="header links" style="left:-100px;margin-top:5px">
+        <li class="top">My Requests</li>
+        <li><a href="{{ path('my_agent_buyer_requests') }}">Buyers ( {{ render(controller('AppBundle:Agent/Agent:getMyTotalBuyerRequests')) }} )</a></li>
+        <li><a href="{{ path('my_agent_grower_requests') }}">Growers ( {{ render(controller('AppBundle:Agent/Agent:getMyTotalGrowerRequests')) }} )</a></li>
+
+    </ul>
+</div>

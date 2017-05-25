@@ -24,6 +24,8 @@ class ProductRepository extends EntityRepository
         return $this->createQueryBuilder('product')
             ->andWhere('product.isActive = :isActive')
             ->setParameter('isActive',true)
+            ->andWhere('product.isSeedling= :isSeedling')
+            ->setParameter('isSeedling',false)
             ->orderBy('product.createdAt','DESC')
             ->getQuery()
             ->execute();
@@ -50,6 +52,8 @@ class ProductRepository extends EntityRepository
         return $this->createQueryBuilder('product')
             ->andWhere('product.isActive = :isActive')
             ->setParameter('isActive',true)
+            ->andWhere('product.isSeedling= :isSeedling')
+            ->setParameter('isSeedling',false)
             ->andWhere('product.user= :createdBy')
             ->setParameter('createdBy',$user)
             ->andWhere('product.isSeedling= :isSeedling')
@@ -85,5 +89,21 @@ class ProductRepository extends EntityRepository
             ->getQuery()
             ->execute();
     }
-
+    public function findMyActiveProducts(User $user){
+        $nrProducts= $this->createQueryBuilder('product')
+            ->select('count(product.id)')
+            ->andWhere('product.isActive = :isActive')
+            ->setParameter('isActive',true)
+            ->andWhere('product.user= :createdBy')
+            ->setParameter('createdBy',$user)
+            ->andWhere('product.isSeedling= :isSeedling')
+            ->setParameter('isSeedling',false)
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrProducts){
+            return $nrProducts;
+        }else{
+            return 0;
+        }
+    }
 }

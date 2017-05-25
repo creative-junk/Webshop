@@ -338,29 +338,12 @@ class HomeController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $buyerGrowers = $em->getRepository('AppBundle:BuyerGrower')
-            ->findBy([
-                'listOwner' => $buyer
-            ]);
-        $growerIds = array();
-
-        if ($buyerGrowers) {
-
-            foreach ($buyerGrowers as $buyerGrower) {
-                $growerIds[] = $buyerGrower->getGrower();
-            }
-        }else{
-            $growerIds[] = 1;
-        }
-
-        $queryBuilder = $em->getRepository('AppBundle:User')
-            ->createQueryBuilder('user')
-            ->andWhere('user.id IN (:growers)')
-            ->setParameter('growers',$growerIds)
-            ->andWhere('user.isActive = :isActive')
-            ->setParameter('isActive', true)
-            ->andWhere('user.userType = :userType')
-            ->setParameter('userType', 'grower');
+        $queryBuilder = $em->getRepository('AppBundle:BuyerGrower')
+            ->createQueryBuilder('buyer_grower')
+            ->andWhere('buyer_grower.listOwner = :whoOwns')
+            ->setParameter('whoOwns',$buyer)
+            ->andWhere('buyer_grower.status = :whatStatus')
+            ->setParameter('whatStatus','Accepted');
 
         $query = $queryBuilder->getQuery();
         /**
@@ -373,8 +356,8 @@ class HomeController extends Controller
             $request->query->getInt('limit', 9)
         );
 
-        return $this->render('home/growers/list.html.twig', [
-            'growers' => $result,
+        return $this->render('home/growers/mygrowers.htm.twig', [
+            'buyerGrowers' => $result,
         ]);
 
     }
@@ -385,33 +368,20 @@ class HomeController extends Controller
     {
         $user = $this->get('security.token_storage')->getToken()->getUser();
 
-        $growersList = new GrowersList();
-        $growersList->setWhoseList($user);
-        $growersList->setStatus("Requested");
-        $growersList->setGrower($grower);
+        $em = $this->getDoctrine()->getManager();
 
-        $form = $this->createForm(addGrowerForm::class, $growersList);
 
-        //only handles data on POST
-        $form->handleRequest($request);
+        $products = $grower->getProducts();
+        $nrproducts = $em->getRepository('AppBundle:Product')
+            ->findMyActiveProducts($grower);
+         $nrAuctionProducts = $em->getRepository('AppBundle:Auction')
+             ->findMyActiveAuctionProducts($grower);
 
-        if ($form->isSubmitted() && $form->isValid() && ($this->listNotExists($user, $grower))) {
-            $growersList = $form->getData();
-
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($growersList);
-            $em->flush();
-
-            $this->addFlash('success', 'Grower Successfully Requested!');
-            return $this->redirectToRoute('buyer_growers');
-        } else {
-            $this->addFlash('success', 'Grower Already Requested!');
-
-        }
         return $this->render('home/growers/grower-details.htm.twig', [
             'grower' => $grower,
-            'form' => $form->createView()
-
+            'products'=>$products,
+            'nrProducts' => $nrproducts,
+            'nrAuctionProducts' => $nrAuctionProducts
         ]);
 
     }
@@ -471,28 +441,13 @@ class HomeController extends Controller
 
         $em = $this->getDoctrine()->getManager();
 
-        $buyerAgents = $em->getRepository('AppBundle:BuyerAgent')
-            ->findBy([
-                'listOwner' => $buyer
-            ]);
-        $agentIds = array();
+        $queryBuilder = $em->getRepository('AppBundle:BuyerAgent')
+            ->createQueryBuilder('buyer_agent')
+            ->andWhere('buyer_agent.listOwner = :whoOwns')
+            ->setParameter('whoOwns',$buyer)
+            ->andWhere('buyer_agent.status = :whatStatus')
+            ->setParameter('whatStatus','Accepted');
 
-        if ($buyerAgents) {
-
-            foreach ($buyerAgents as $buyerAgent) {
-                $agentIds[] = $buyerAgent->getAgent();
-            }
-        }else{
-            $agentIds[] = 1;
-        }
-        $queryBuilder = $em->getRepository('AppBundle:User')
-            ->createQueryBuilder('user')
-            ->andWhere('user.id IN (:agents)')
-            ->setParameter('agents',$agentIds)
-            ->andWhere('user.isActive = :isActive')
-            ->setParameter('isActive', true)
-            ->andWhere('user.userType = :userType')
-            ->setParameter('userType', 'agent');
 
         $query = $queryBuilder->getQuery();
         /**
@@ -505,8 +460,8 @@ class HomeController extends Controller
             $request->query->getInt('limit', 9)
         );
 
-        return $this->render('home/agents/list.html.twig', [
-            'agents' => $result,
+        return $this->render(':home/agents:myagents.htm.twig', [
+            'buyerAgents' => $result,
         ]);
 
     }
@@ -514,10 +469,23 @@ class HomeController extends Controller
     /**
      * @Route("/agents/{id}/view",name="view_agent")
      */
-    public function agentProfileActionAction()
+    public function agentProfileActionAction(Request $request, User $agent)
     {
+        $em = $this->getDoctrine()->getManager();
 
-        return $this->render('home/agents/view.htm.twig');
+        $products = $agent->getProducts();
+        $nrproducts = $em->getRepository('AppBundle:Product')
+            ->findMyActiveProducts($agent);
+        $nrAuctionProducts = $em->getRepository('AppBundle:Auction')
+            ->findMyActiveAuctionProducts($agent);
+
+        return $this->render('home/agents/view.htm.twig',[
+            'agent' => $agent,
+            'products'=>$products,
+            'nrProducts' => $nrproducts,
+            'nrAuctionProducts' => $nrAuctionProducts
+
+        ]);
 
     }
 

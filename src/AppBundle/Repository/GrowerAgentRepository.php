@@ -50,4 +50,38 @@ class GrowerAgentRepository extends EntityRepository
             return 0;
         }
     }
+    public function getNrGrowerRequests(User $user){
+        $nrGrowerRequests= $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner <> :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->andWhere('user.agent = :agent')
+            ->setParameter('agent', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrGrowerRequests){
+            return $nrGrowerRequests;
+        }else{
+            return 0;
+        }
+    }
+    public function getNrMyGrowerRequests(User $user){
+        $nrGrowerRequests= $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user)
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrGrowerRequests){
+            return $nrGrowerRequests;
+        }else{
+            return 0;
+        }
+    }
 }

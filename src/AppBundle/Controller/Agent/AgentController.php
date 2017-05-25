@@ -13,6 +13,7 @@ namespace AppBundle\Controller\Agent;
 use AppBundle\Entity\Auction;
 use AppBundle\Entity\Cart;
 use AppBundle\Entity\Product;
+use AppBundle\Entity\User;
 use AppBundle\Entity\UserOrder;
 use AppBundle\Form\addToCartFormType;
 use AppBundle\Form\AgentProductForm;
@@ -307,9 +308,26 @@ class AgentController extends Controller
     /**
      * @Route("/growers/{id}/view",name="agent_grower_profile")
      */
-    public function growerProfileAction()
+    public function growerProfileAction(Request $request, User $grower)
     {
-        return $this->render('agent/growers/view.htm.twig');
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+
+
+        $products = $grower->getProducts();
+        $nrproducts = $em->getRepository('AppBundle:Product')
+            ->findMyActiveProducts($grower);
+        $nrAuctionProducts = $em->getRepository('AppBundle:Auction')
+            ->findMyActiveAuctionProducts($grower);
+
+        return $this->render('agent/growers/view.htm.twig', [
+            'grower' => $grower,
+            'products'=>$products,
+            'nrProducts' => $nrproducts,
+            'nrAuctionProducts' => $nrAuctionProducts
+        ]);
+
     }
 
     /**
@@ -361,6 +379,173 @@ class AgentController extends Controller
         ]);
     }
 
+
+
+    public function getTotalBuyerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrBuyerRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalBuyerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrMyBuyerRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    /**
+     * @Route("/buyers/requests/my",name="my_agent_buyer_requests")
+     */
+    public function getMyBuyerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $query = $em->getRepository('AppBundle:BuyerAgent')
+            ->getMyBuyerRequests($user);
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/buyers/myRequests.htm.twig', [
+            'buyerRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/growers/requests/my",name="my_agent_grower_requests")
+     */
+    public function getMyGrowerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+        return $this->render('agent/growers/myRequests.htm.twig', [
+            'growerRequests' => $result,
+        ]);
+    }
+    /**
+     * @Route("/growers/requests/",name="agent_grower_requests")
+     */
+    public function getGrowerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $whoseListIds[]=array();
+        $whoseListIds[]=$user;
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user)
+            ->andWhere('user.listOwner NOT IN (:agents)')
+            ->setParameter('agents',$whoseListIds);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+
+        return $this->render('agent/growers/requests.html.twig', [
+            'growerRequests' => $result,
+        ]);
+    }
+    public function getMyTotalGrowerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrGrowerRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrMyGrowerRequests($user);
+        $totalRequests += $nrGrowerRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    /**
+     * @Route("/buyers/requests/",name="agent_buyer_requests")
+     */
+    public function getBuyerRequestsAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $whoseListIds[]=array();
+        $whoseListIds[]=$user;
+
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:BuyerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user)
+            ->andWhere('user.listOwner NOT IN (:agents)')
+            ->setParameter('agents',$whoseListIds);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+
+
+        return $this->render('agent/buyers/requests.html.twig', [
+            'buyerRequests' => $result,
+        ]);
+    }
     /**
      * @Route("/buyers/{id}/view",name="agent_buyer_profile")
      */
@@ -369,5 +554,117 @@ class AgentController extends Controller
         return $this->render('agent/buyers/view.htm.twig');
     }
 
+    /**
+     * @Route("/buyers/my/",name="my-agent-buyers")
+     */
+    public function myBuyersAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:BuyerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Accepted')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+        return $this->render('agent/buyers/mylist.html.twig', [
+            'agentBuyers' => $result,
+        ]);
+    }
+    /**
+     * @Route("/growers/my/",name="my-agent-growers")
+     */
+    public function myGrowersAction(Request $request){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $em = $this->getDoctrine()->getManager();
+        $queryBuilder = $em->getRepository('AppBundle:GrowerAgent')
+            ->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Accepted')
+            ->andWhere('user.agent = :whoIsAgent')
+            ->setParameter('whoIsAgent', $user);
+
+        $query = $queryBuilder->getQuery();
+        /**
+         * @var $paginator \Knp\Component\Pager\Paginator
+         */
+        $paginator = $this->get('knp_paginator');
+
+        $result = $paginator->paginate(
+            $query,
+            $request->query->getInt('page', 1),
+            $request->query->getInt('limit', 9)
+        );
+        return $this->render('agent/growers/mylist.html.twig', [
+            'agentGrowers' => $result,
+        ]);
+    }
+    public function getTotalGrowerRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+
+        $nrAgentRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrGrowerRequests($user);
+        $totalRequests += $nrAgentRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+        $totalRequests = 0;
+        $em = $this->getDoctrine()->getManager();
+        $nrGrowerRequests = $em->getRepository('AppBundle:BuyerGrower')
+            ->getNrGrowerRequests($user);
+
+        $nrBuyerRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrBuyerRequests($user);
+
+        $totalRequests += $nrGrowerRequests;
+        $totalRequests += $nrBuyerRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
+    public function getMyTotalRequestsAction(){
+        $user = $this->get('security.token_storage')->getToken()->getUser();
+
+        $totalRequests = 0;
+
+        $em = $this->getDoctrine()->getManager();
+
+        $nrBuyerRequests = $em->getRepository('AppBundle:BuyerAgent')
+            ->getNrMyBuyerRequests($user);
+
+        $nrGrowerRequests = $em->getRepository('AppBundle:GrowerAgent')
+            ->getNrMyGrowerRequests($user);
+
+        $totalRequests += $nrBuyerRequests;
+        $totalRequests += $nrGrowerRequests;
+
+        return $this->render(':partials:totalRequests.html.twig', [
+            'nrRequests' => $totalRequests,
+
+        ]);
+
+    }
 
 }

@@ -62,7 +62,7 @@ class GrowerAgentController extends Controller
     public function growerAgentExists(User $grower, User $agent,User $whoseList){
         $em = $this->getDoctrine()->getManager();
 
-        $growerAgent = $em->getRepository('AppBundle:BuyerAgent')
+        $growerAgent = $em->getRepository('AppBundle:growerAgent')
             ->findOneBy([
                 'buyer'=>$grower,
                 'agent'=>$agent,
@@ -114,6 +114,35 @@ class GrowerAgentController extends Controller
     public function cancelGrowerAgentRequestAction(GrowerAgent $growerAgent)
     {
         $growerAgent->setStatus("Cancelled");
+        $growerAgent->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($growerAgent);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
+
+    /**
+     * @Route("/grower/accept/{id}/request",name="accept-agent-grower-request")
+     */
+    public function acceptGrowerRequest(GrowerAgent $growerAgent){
+
+        $growerAgent->setStatus("Accepted");
+        $growerAgent->setDateSince(new \DateTime());
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($growerAgent);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
+    /**
+     * @Route("/grower/reject/{id}/request",name="reject-agent-grower-request")
+     */
+    public function rejectBuyerRequest(GrowerAgent $growerAgent){
+
+        $growerAgent->setStatus("Rejected");
         $growerAgent->setDateSince(new \DateTime());
 
         $em = $this->getDoctrine()->getManager();

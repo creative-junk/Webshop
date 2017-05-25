@@ -71,4 +71,61 @@ class BuyerAgentRepository extends EntityRepository
             ->setParameter('whoOwnsList', $user)
             ->getQuery();
     }
+
+    public function getNrBuyerRequests(User $user){
+        $nrAgentRequests= $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner <> :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->andWhere('user.agent = :buyer')
+            ->setParameter('buyer', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrAgentRequests){
+            return $nrAgentRequests;
+        }else{
+            return 0;
+        }
+    }
+    public function getBuyerRequestsQuery(User $user){
+        return $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.listOwner <> :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->andWhere('user.agent = :buyer')
+            ->setParameter('agent', $user)
+            ->getQuery();
+    }
+    public function getNrMyBuyerRequests(User $user){
+        $nrAgentRequests= $this->createQueryBuilder('user')
+            ->select('count(user.id)')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.agent = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->getQuery()
+            ->getSingleScalarResult();
+        if ($nrAgentRequests){
+            return $nrAgentRequests;
+        }else{
+            return 0;
+        }
+    }
+    public function getMyBuyerRequests(User $user){
+        return $this->createQueryBuilder('user')
+            ->andWhere('user.status = :isAccepted')
+            ->setParameter('isAccepted', 'Requested')
+            ->andWhere('user.agent = :whoIsBuyer')
+            ->setParameter('whoIsBuyer', $user)
+            ->andWhere('user.listOwner = :whoOwnsList')
+            ->setParameter('whoOwnsList', $user)
+            ->getQuery();
+    }
+
 }
