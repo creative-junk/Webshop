@@ -12,6 +12,7 @@ namespace AppBundle\Controller\Agent;
 
 use AppBundle\Entity\Auction;
 use AppBundle\Entity\Cart;
+use AppBundle\Entity\MyList;
 use AppBundle\Entity\Product;
 use AppBundle\Entity\User;
 use AppBundle\Entity\UserOrder;
@@ -24,6 +25,7 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @Route("/agent")
@@ -754,6 +756,56 @@ class AgentController extends Controller
         ]);
     }
 
+    /**
+     * @Route("/recommend/buyer/{id}/product/{product}",name="agent-recommend-product")
+     */
+    public function recommendProduct(User $buyer,Product $product){
+        $agent = $this->get('security.token_storage')->getToken()->getUser();
 
+        $myList = new MyList();
+        $myList->setProduct($product);
+        $myList->setRecommendedBy($agent);
+        $myList->setListType("Agent Recommendations");
+        $myList->setListOwner($buyer);
+        $myList->setCreatedAt(new \DateTime());
+        $myList->setUpdatedAt(new \DateTime());
+        $myList->setProductType("Direct");
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($myList);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
+    /**
+     * @Route("/recommend/buyer/{id}/auction/{auction}",name="agent-recommend-auction")
+     */
+    public function recommendAuction(User $buyer,Auction $auction){
+        $agent = $this->get('security.token_storage')->getToken()->getUser();
+
+        $myList = new MyList();
+        $myList->setAuctionProduct($auction);
+        $myList->setRecommendedBy($agent);
+        $myList->setListType("Agent Recommendations");
+        $myList->setListOwner($buyer);
+        $myList->setCreatedAt(new \DateTime());
+        $myList->setUpdatedAt(new \DateTime());
+        $myList->setProductType("Auction");
+
+        $em = $this->getDoctrine()->getManager();
+        $em->persist($myList);
+        $em->flush();
+
+        return new Response(null, 204);
+    }
+
+    /**
+     * @Route("/recommendations/my",name="my-agent-recommendations")
+     */
+    public function myRecommendationsAction(){
+        $agent = $this->get('security.token_storage')->getToken()->getUser();
+
+
+    }
 
 }

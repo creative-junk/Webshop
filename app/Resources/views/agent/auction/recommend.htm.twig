@@ -1,5 +1,27 @@
 {% extends 'base.html.twig' %}
 {% block title %} Recommend {{ product.title }}{% endblock %}
+{% block javascripts %}
+<script type="text/javascript">
+    jQuery(document).ready(function () {
+        $('.js-recommend-user').on('click',function (e) {
+            e.preventDefault();
+
+            var $el = $(this).closest('.js-recommend-item');
+
+            $(this).find('.fa-exchange')
+                .removeClass('fa-exchange')
+                .addClass('fa-spinner')
+                .addClass('fa-spin');
+            $.ajax({
+                url: $(this).data('url'),
+                method: 'GET'
+            }).done(function () {
+                $el.fadeOut("slow");
+            });
+        });
+    })
+</script>
+{% endblock %}
 {% block pageclass %}
 <body data-container="body" itemtype="http://schema.org/Product" itemscope="itemscope"
       class="catalog-product-view product-orion-two-tone-fitted page-layout-1column" aria-busy="false">
@@ -168,12 +190,19 @@
                 <fieldset>
                     <legend>Please select Buyers to recommend to</legend>
                 {% for agentBuyer in agentBuyers %}
-                    <p><span  style="display:inline-block;width:180px;"><strong>{{ agentBuyer.buyer.fullName }}</strong></span> <a href="#"
-                                class="action request js-request-user"
+                    <p class="js-recommend-item">
+                        <span  style="display:inline-block;width:180px;"><strong>{{ agentBuyer.buyer.fullName }}</strong></span>
+                        <a href="#"
+                                class="action request js-recommend-user"
+                           data-url="{{ path('agent-recommend-auction',{
+                               'id': agentBuyer.buyer.id,
+                               'auction':product.id
+                           }) }}"
                                 title="Recommend to Buyer">
                             <span class="fa fa-exchange fa-1x"></span>  Recommend
 
-                        </a></p>
+                        </a>
+                    </p>
                 {% else %}
                     <p>You have no Buyers on record</p>
                 {% endfor %}

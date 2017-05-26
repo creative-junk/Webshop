@@ -117,9 +117,9 @@ class Auction
      */
     private $status;
     /**
-     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="product",fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="auctionProduct",fetch="EXTRA_LAZY")
      */
-    private $productList;
+    private $auctionList;
 
     public function __construct()
     {
@@ -128,7 +128,7 @@ class Auction
         if ($this->getUpdatedAt() == null) {
             $this->setUpdatedAt(new \DateTime());
         }
-        $this->productList= new ArrayCollection();
+        $this->auctionList= new ArrayCollection();
 
     }
 
@@ -254,21 +254,7 @@ class Auction
         $this->user = $user;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getProduct()
-    {
-        return $this->product;
-    }
 
-    /**
-     * @param mixed $product
-     */
-    public function setProduct(Product $product)
-    {
-        $this->product = $product;
-    }
 
     /**
      * @return mixed
@@ -477,9 +463,9 @@ class Auction
     /**
      * @return ArrayCollection[MyList]
      */
-    public function getProductList()
+    public function getAuctionList()
     {
-        return $this->productList;
+        return $this->auctionList;
     }
 
 }

@@ -9,6 +9,7 @@
 
 namespace AppBundle\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -140,6 +141,10 @@ class Product
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;
+    /**
+     * @ORM\OneToMany(targetEntity="AppBundle\Entity\MyList",mappedBy="product")
+     */
+    private $productList;
 
     public function __construct()
     {
@@ -148,6 +153,7 @@ class Product
         if ($this->getUpdatedAt() == null) {
             $this->setUpdatedAt(new \DateTime());
         }
+        $this->productList = new ArrayCollection();
 
     }
     /**
@@ -572,5 +578,14 @@ class Product
     {
         $this->season = $season;
     }
+
+    /**
+     * @return ArrayCollection[Product]
+     */
+    public function getProductList()
+    {
+        return $this->productList;
+    }
+
 
 }

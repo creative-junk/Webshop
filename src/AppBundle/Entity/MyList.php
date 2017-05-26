@@ -26,7 +26,7 @@ class MyList
      */
     private $id;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="myLists")
      */
     private $listOwner;
     /**
@@ -38,15 +38,15 @@ class MyList
      */
     private $productType;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\User",inversedBy="myRecommendations")
      */
     private $recommendedBy;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Product",inversedBy="productList")
      */
     private $product;
     /**
-     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Auction")
+     * @ORM\ManyToOne(targetEntity="AppBundle\Entity\Auction",inversedBy="auctionList")
      */
     private $auctionProduct;
     /**
@@ -143,7 +143,7 @@ class MyList
      */
     public function setProduct($product)
     {
-        $this->productId = $product;
+        $this->product = $product;
     }
 
     /**
