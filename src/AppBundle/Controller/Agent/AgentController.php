@@ -805,6 +805,14 @@ class AgentController extends Controller
     public function myRecommendationsAction(){
         $agent = $this->get('security.token_storage')->getToken()->getUser();
 
+        $em=$this->getDoctrine()->getManager();
+
+        $recommendations = $em->getRepository('AppBundle:MyList')
+            ->getMyRecommendations($agent);
+        return $this->render(':agent/myList:recommend.htm.twig',[
+            'recommendations' => $recommendations
+        ]);
+
 
     }
 

@@ -11,9 +11,25 @@
 namespace AppBundle\Repository;
 
 
+use AppBundle\Entity\MyList;
+use AppBundle\Entity\User;
 use Doctrine\ORM\EntityRepository;
 
 class MyListRepository extends EntityRepository
 {
+    /**
+     * @param User $user
+     * @return MyList
+     */
+    public function getMyRecommendations(User $user){
+        return $this->createQueryBuilder('myList')
+            ->andWhere('myList.listType = :listType')
+            ->setParameter('listType',"Agent Recommendations")
+            ->andWhere('myList.recommendedBy= :recommendedBy')
+            ->setParameter('recommendedBy',$user)
+            ->orderBy('myList.createdAt','DESC')
+            ->getQuery()
+            ->execute();
+    }
 
 }
